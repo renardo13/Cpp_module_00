@@ -1,4 +1,4 @@
-#include "PhoneBook.hpp"
+#include "../includes/PhoneBook.hpp"
 
 int	main(void)
 {
@@ -7,7 +7,8 @@ int	main(void)
 
 	std::string line;
 	i = 0;
-	std::cout << "Type ADD, SEARCH or EXIT if you want to use the phoneBook" << std::endl;
+	std::cout << "Welcome to the phoneBook" << std::endl;
+	std::cout << "Please, Type ADD, SEARCH or EXIT" << std::endl;
 	while (std::getline(std::cin, line))
 	{
 		if (line == "ADD")
@@ -22,10 +23,7 @@ int	main(void)
 		else if (line == "EXIT")
 			return (0);
 		else
-		{
 			std::cout << "Command is not valid" << std::endl;
-			return (0);
-		}
-		std::cout << "Type ADD, SEARCH or EXIT if you want to use the phoneBook" << std::endl;
+		std::cout << "Please, Type ADD, SEARCH or EXIT" << std::endl;
 	}
 }

@@ -6,11 +6,11 @@
 #    By: melmarti <melmarti@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/07 18:15:59 by melmarti          #+#    #+#              #
-#    Updated: 2024/11/08 18:32:15 by melmarti         ###   ########.fr        #
+#    Updated: 2024/11/27 11:12:12 by melmarti         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = PhoneBook.cpp Contact.cpp main.cpp
+SRC = src/PhoneBook.cpp src/Contact.cpp src/main.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f

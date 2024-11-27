@@ -1,4 +1,4 @@
-#include "PhoneBook.hpp"
+#include "../includes/PhoneBook.hpp"
 
 PhoneBook::PhoneBook(void)
 {
@@ -45,9 +45,9 @@ int PhoneBook::add(int i)
 	std::string nickName;
 	std::string phoneNumber;
 	std::string darkestSecret;
-	std::cout << "Please, Add the first name of the contact" << std::endl;
 	if (i == 7)
 		i = 0;
+	std::cout << "Please, Add the first name of the contact" << std::endl;
 	while (true)
 	{
 		getline(std::cin, firstName);
@@ -58,7 +58,10 @@ int PhoneBook::add(int i)
 			std::cout << "please, try again:" << std::endl;
 		}
 		else
+		{
+			this->_contacts[i].setFirstName(firstName);
 			break ;
+		}
 	}
 	std::cout << "Please, Add the last name of the contact" << std::endl;
 	while (true)
@@ -106,6 +109,7 @@ int PhoneBook::add(int i)
 			break ;
 		}
 	}
+	std::cout << "Please, Add the Darkest secret of the contact" << std::endl;
 	while (true)
 	{
 		getline(std::cin, darkestSecret);
@@ -123,10 +127,55 @@ int PhoneBook::add(int i)
 	return (0);
 }
 
+void	display(std::string s)
+{
+	if (s.size() > 10)
+	{
+		s = s.substr(0, 10);
+		s[9] = '.';
+	}
+	std::cout << std::setw(10) << s << '|';
+}
+
 void PhoneBook::search() const
 {
-	// std::cout << "The nick name" << std::endl;
-	// getline(std::cin, firstName);
-	// std::cout << "First name accepted: " << firstName << std::endl;
-	// else (this->_contacts[i].setFirstName(firstName));
+	int index;
+
+	if (this->_contacts[0].getFirstName().empty())
+	{
+		std::cout << "The phonebook is empty" << std::endl << std::endl;
+		return ;
+	}
+	for (int i = 0; i < 8; i++)
+	{
+		if (this->_contacts[i].getFirstName().empty())
+			break ;
+		std::cout << std::setw(10) << i << "|";
+		display(this->_contacts[i].getFirstName());
+		display(this->_contacts[i].getLastName());
+		display(this->_contacts[i].getNickName());
+		std::cout << std::endl;
+	}
+	std::cout << "Enter an index to have all the informations of the contact" << std::endl;
+	std::cin >> index;
+	if (index > 9 || index < 0)
+	{
+		std::cout << "Index out of range. Please enter an index between 0 and 7: ";
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		return ;
+	}
+	if (!this->_contacts[index].getFirstName().empty())
+	{
+		std::cout << std::endl;
+		std::cout << "Contact number " << index << std::endl;
+		std::cout << "Name : " << this->_contacts[index].getFirstName() << std::endl;
+		std::cout << "Last name : " << this->_contacts[index].getLastName() << std::endl;
+		std::cout << "Nick name : " << this->_contacts[index].getNickName() << std::endl;
+	}
+	else
+		std::cout << "Index " << index << " is not attributed yet" << std::endl;
+	std::cout << std::endl;
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
