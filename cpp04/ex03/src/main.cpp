@@ -5,31 +5,44 @@
 
 int main()
 {
-    // AMateria *materia = new Ice();
+    AMateria *materia = new Ice();
+    std::cout << std::string(40, '*') << std::endl;
+
+    Character car;
+    car.equip(materia);
+
+    std::cout << std::string(40, '*') << std::endl;
 
     // std::cout << materia->getType() << std::endl;
 
-    IMateriaSource* src = new MateriaSource();
+    // IMateriaSource* src = new MateriaSource();
+    // AMateria *mm = NULL;
 
-    src->learnMateria(new Ice());
-    src->learnMateria(new Cure());
+    // std::cout << std::string(40, '*') << std::endl;
 
-    ICharacter* me = new Character("me");
-    AMateria* tmp;
+    // src->learnMateria(mm);
+    // src->learnMateria(new Cure());
+    // std::cout << std::string(40, '*') << std::endl;
 
-    tmp = src->createMateria("ice");
-    me->equip(tmp);
-    tmp = src->createMateria("cure");
-    me->equip(tmp);
+    ICharacter* me = &car;
+    // AMateria* tmp;
 
-    ICharacter* bob = new Character("bob");
+    // std::cout << std::string(40, '*') << std::endl;
+    // tmp = src->createMateria("icee");
+    // me->equip(tmp);
+    // tmp = src->createMateria("cure");
+    // me->equip(tmp);
+    // std::cout << std::string(40, '*') << std::endl;
 
-    me->use(0, *bob);
-    me->use(1, *bob);
+    // ICharacter* bob = &car;
+    std::cout << std::string(40, '*') << std::endl;
 
-    delete bob;
-    delete me;
-    delete src;
+    me->use(0, car);
+    // me->use(1, *bob);
+
+    // delete bob;
+    // delete me;
+    // delete src;
     // delete materia;
     return 0;
 }
