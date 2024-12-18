@@ -1,4 +1,5 @@
-SRC = src/main.cpp src/Animal.cpp src/Cat.cpp src/Dog.cpp src/Brain.cpp
+SRC = src/main.cpp src/Animal.cpp src/Cat.cpp src/Dog.cpp \
+src/WrongAnimal.cpp src/WrongCat.cpp
 
 OBJ = $(SRC:.cpp=.o)
 CC = c++

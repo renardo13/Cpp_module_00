@@ -10,13 +10,19 @@ ClapTrap::ClapTrap() : _hitPoints(10), _energyPoints(10), _attackDamage(0)
 ClapTrap::ClapTrap(std::string const &name) : _name(name), _hitPoints(10),
 	_energyPoints(10), _attackDamage(0)
 {
-	std::cout << "ClapTrap constructor is called" << std::endl;
+	std::cout << "ClapTrap constructor with parameters is called" << std::endl;
 }
 
 ClapTrap::~ClapTrap()
 {
 	std::cout << "ClapTrap destructor is called" << std::endl;
 }
+ClapTrap::ClapTrap(ClapTrap const &other)
+{
+	std::cout << "ClapTrap copy constructor called" << std::endl;
+	operator=(other);
+}
+
 ClapTrap &ClapTrap::operator=(ClapTrap const &other)
 {
 	this->_name = other._name;
@@ -24,12 +30,6 @@ ClapTrap &ClapTrap::operator=(ClapTrap const &other)
 	this->_energyPoints = other._energyPoints;
 	this->_attackDamage = other._attackDamage;
 	return(*this);
-}
-
-ClapTrap::ClapTrap(ClapTrap const &other)
-{
-	std::cout << "ClapTrap copy constructor called" << std::endl;
-	operator=(other);
 }
 
 void ClapTrap::attack(const std::string &target)
@@ -87,6 +87,7 @@ int ClapTrap::getHitPoints() const
 {
 	return (this->_hitPoints);
 }
+
 
 int ClapTrap::getDamagePoints() const
 {

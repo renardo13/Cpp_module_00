@@ -1,10 +1,9 @@
-SRC = src/main.cpp src/Animal.cpp src/Cat.cpp src/Dog.cpp src/Brain.cpp
-
+SRC = src/main.cpp src/ClapTrap.cpp src/ScavTrap.cpp src/FragTrap.cpp src/DiamondTrap.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror -std=c++98
-NAME = animal
+FLAGS = -Wall -Wextra -Werror -Wshadow -Wno-shadow -std=c++98
+NAME = DiamondTrap
 INCLUDE = includes
 HEADERS = $(wildcard $(INCLUDE)/*.h)
 

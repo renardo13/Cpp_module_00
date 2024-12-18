@@ -1,20 +1,26 @@
 #include "../includes/ClapTrap.hpp"
 #include "../includes/ScavTrap.hpp"
+#include "../includes/FragTrap.hpp"
 
 int main()
 {
-	// ClapTrap lol("Julien");
-	ScavTrap scav("Bernard");
-	scav.attack("lol");
+	ScavTrap scav("scav");
+	FragTrap frag("frag");
 
-	scav.attack("Robert");
+	scav.attack("frag");
+	frag.attack("scav");
+
 	std::cout << scav.getName() << " energy points left " << scav.getEnergyPoints() << " hits points left " << scav.getHitPoints() << " damage points left " << scav.getDamagePoints() << std::endl;
 	scav.beRepaired(10);
+
 	scav.takeDamage(10);
 	scav.takeDamage(10);
-	std::cout << scav.getName() << " energy points left " << scav.getEnergyPoints() << " hits points left " << scav.getHitPoints() << " damage points left " << scav.getDamagePoints() << std::endl;
+	frag.takeDamage(10);
+	frag.highFivesGuys();
+
+	std::cout << frag.getName() << " energy points left " << frag.getEnergyPoints() << " hits points left " << frag.getHitPoints() << " damage points left " << frag.getDamagePoints() << std::endl;
 	scav.beRepaired(10);
 	scav.beRepaired(1);
-	scav.attack("Yoan");
-	scav.attack("Yyo");
 }
+
+

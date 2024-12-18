@@ -9,6 +9,7 @@ int main(void)
     // const Animal *cat = new Cat();
 
     // we need double pointer here
+    //Cure is a type of AMateria so it is possible to copy it, it is polymorphism
     Animal *anim[10];
 
     for (int i = 0; i < 10; i++)
