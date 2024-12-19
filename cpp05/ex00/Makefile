@@ -1,11 +1,10 @@
-SRC = src/main.cpp src/AMateria.cpp src/Cure.cpp src/Ice.cpp src/Character.cpp src/MateriaSource.cpp
-
+SRC = Srcs/main.cpp Srcs/Bureaucrat.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
 FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
-NAME = Amateria
-INCLUDE = includes
+NAME = Bureaucrat
+INCLUDE = Includes
 HEADERS = $(wildcard $(INCLUDE)/*.h)
 
 all: $(NAME)

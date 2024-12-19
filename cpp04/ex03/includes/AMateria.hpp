@@ -14,6 +14,7 @@ class AMateria
     
         AMateria();
         virtual ~AMateria();
+        AMateria(std::string const type);
         AMateria(AMateria const &cpy);
         AMateria& operator=(AMateria const &other);
 

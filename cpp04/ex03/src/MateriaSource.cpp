@@ -3,25 +3,41 @@
 #include "../includes/Cure.hpp"
 #include "../includes/Ice.hpp"
 
-MateriaSource::MateriaSource()
-{
-    std::cout << "MateriaSource default constructor is called" << std::endl;
-}
 MateriaSource::~MateriaSource()
 {
     std::cout << "MateriaSource destructor is called" << std::endl;
-    for(int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
+    {
+        if(this->_materia[i])
+            delete this->_materia[i];
+    }
+}
+
+MateriaSource::MateriaSource(void) : IMateriaSource()
+{
+    std::cout << "MateriaSource default constructor is called" << std::endl;
+    for (int i = 0; i < 4; i++)
         this->_materia[i] = NULL;
 }
 
 MateriaSource::MateriaSource(MateriaSource const &cpy)
 {
+    std::cout << "MateriaSource copy constructeur is called" << std::endl;
     *this = cpy;
 }
 
 MateriaSource &MateriaSource::operator=(MateriaSource const &other)
-{
-    (void)other;
+{   
+    if (this != &other)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            delete this->_materia[i];
+            this->_materia[i] = NULL;
+            if(other._materia[i])
+                this->_materia[i] = other._materia[i]->clone();
+        }
+    }
     return (*this);
 }
 
@@ -34,27 +50,24 @@ void MateriaSource::learnMateria(AMateria *m)
         if (!this->_materia[i])
         {
             this->_materia[i] = m;
-            i = -1;
             break;
         }
         i++;
     }
     if (i == 4)
-        std::cout << "Materia inside MateriaSource is full" << std::endl;
-    else if (i == 0)
-        std::cout << "You tried to add an empty materia" << std::endl;
-    else 
-        std::cout << "Materia is successfully added" << std::endl;
+        std::cout << "Inventory is full" << std::endl;
+    else
+        std::cout << "New materia is now in the inventory, congratulations !" << std::endl;
 }
 
-AMateria* MateriaSource::createMateria(std::string const &type)
+AMateria *MateriaSource::createMateria(std::string const &type)
 {
-    if (type == "ice")
-        return new Ice();  // Crée un objet de type Ice
-    else if (type == "cure")
-        return new Cure();  // Crée un objet de type Cure
-    else 
-        std::cout << "Materia does not exists" << std::endl;
-
-    return NULL;  // Si le type est inconnu, retourner nullptr
+    for (int i = 0; i < 4; i++)
+	{
+		if (this->_materia[i] && this->_materia[i]->getType() == type)
+		{
+			return (this->_materia[i]->clone());
+		}
+	}
+    return NULL;
 }

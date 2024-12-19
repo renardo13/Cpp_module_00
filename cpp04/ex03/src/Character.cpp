@@ -3,40 +3,43 @@
 Character::~Character(void)
 {
     std::cout << "Character destructeur is called" << std::endl;
+    for (int i = 0; i < 4; i++)
+    {
+        if(this->_materia[i])
+            delete this->_materia[i];
+    }
 }
 
-Character::Character(void) : _name("Robert")
+Character::Character(void) : ICharacter(), _name("Robert")
 {
     std::cout << "Character constructeur is called" << std::endl;
     for (int i = 0; i < 4; i++)
         this->_materia[i] = NULL;
 }
 
-Character::Character(Character const &cpy) : ICharacter()
+Character::Character(Character const &cpy)
 {
     std::cout << "Character copy constructeur is called" << std::endl;
     *this = cpy;
 }
 
-Character::Character(std::string const name) : _name(name)
+Character::Character(std::string const name) : ICharacter(), _name(name)
 {
     std::cout << "Character constructor with param is called" << std::endl;
+    for (int i = 0; i < 4; i++)
+        this->_materia[i] = NULL;
 }
 
 Character &Character::operator=(Character const &other)
 {
-    AMateria *tmp;
-
     if (this != &other)
     {
         for (int i = 0; i < 4; i++)
         {
-            if (this->_materia[i])
-            {
-                tmp = this->_materia[i];
+            delete this->_materia[i];
+            this->_materia[i] = NULL;
+            if (other._materia[i])
                 this->_materia[i] = other._materia[i]->clone();
-                delete tmp;
-            }
         }
     }
     return (*this);
@@ -55,29 +58,45 @@ void Character::equip(AMateria *m)
     {
         if (!this->_materia[i])
         {
-            this->_materia[i] = m;
+            this->_materia[i] = m->clone();
             i = -1;
             break;
         }
         i++;
     }
     if (i == 4)
-        std::cout << "Materia is full" << std::endl;
+        std::cout << "Inventory is full" << std::endl;
     else if (i == 0)
-        std::cout << "You tried to add an empty materia" << std::endl;
+        std::cout << "Impossible to add this specific kind of materia" << std::endl;
     else
         std::cout << "Materia was added successfully" << std::endl;
 }
 
 void Character::unequip(int idx)
 {
-    if (!_materia[idx])
-        std::cout << "Materia not exists" << std::endl;
-    this->_materia[idx] = NULL;
+    if (idx >= 0 && idx < 4)
+    {
+        if (!this->_materia[idx])
+            std::cout << "There is no materia here" << std::endl;
+        else
+        {
+            std::cout << "Materia was remove successfully" << std::endl;
+            delete this->_materia[idx];
+            this->_materia[idx] = NULL;
+        }
+    }
 }
 
 void Character::use(int idx, ICharacter &target)
 {
-    if (this->_materia[idx])
-        this->_materia[idx]->use(target);
+    if (idx >= 0 && idx < 4)
+    {
+        if (!this->_materia[idx])
+            std::cout << "There is no materia here" << std::endl;
+        else
+        {
+            std::cout << "Materia is used successfully" << std::endl;
+            this->_materia[idx]->use(target);
+        }
+    }
 }

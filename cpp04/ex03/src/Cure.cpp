@@ -20,9 +20,7 @@ Cure::Cure(Cure const &cpy)
 Cure& Cure::operator=(Cure const &other)
 {
     if(this != &other)
-    {
         this->_type = other._type;
-    }
     return(*this);
 }
 
