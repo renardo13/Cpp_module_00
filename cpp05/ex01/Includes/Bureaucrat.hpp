@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <exception>
+#include "Form.hpp"
+
+class Form;
 
 class Bureaucrat
 {
@@ -10,16 +13,17 @@ class Bureaucrat
         int _grade;
 
     public:
-        //canonical class form
+         //canonical class form
         Bureaucrat();
         ~Bureaucrat();
         Bureaucrat(Bureaucrat const &cpy);
         Bureaucrat const& operator=(Bureaucrat const &other);
-        Bureaucrat(std::string name, int grade);
 
         //operators
         void operator++(int);
         void operator--(int);
+
+        Bureaucrat(std::string name, int grade);
 
         //exceptions
         class GradeTooHighException : public std::exception
@@ -32,6 +36,8 @@ class Bureaucrat
              public:
                 virtual const char *what() const throw();
         };
+
+        void signForm(Form &form);
         
         //getter
         std::string const getName() const;

@@ -6,17 +6,18 @@ int main(void)
     {
         Bureaucrat b("Gilbert", 200);
     }
-    catch(Bureaucrat::GradeTooHighException &e)
+    catch(std::exception const &e)
     {
         std::cerr << e.what() << std::endl;
     }
     try
     {
-        Bureaucrat b1("Gilbert", -1);   
+        Bureaucrat b1("Gilbert", 1000);   
     }
-    catch(Bureaucrat::GradeTooLowException &e)
+    catch(std::exception const &e)
     {
         std::cerr << e.what() << std::endl;
     }
-    Bureaucrat b2("Gilbert", 12);  
+    Bureaucrat b2("Gilbert", 12);
 }
+
