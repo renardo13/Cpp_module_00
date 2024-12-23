@@ -4,7 +4,7 @@ Srcs/RobotomyRequestForm.cpp Srcs/PresidentialPardonForm.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
+FLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -fPIE
 NAME = 28B
 INCLUDE = Includes
 HEADERS = $(wildcard $(INCLUDE)/*.h)

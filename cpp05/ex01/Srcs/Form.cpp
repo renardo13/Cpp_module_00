@@ -1,15 +1,15 @@
 #include "Form.hpp"
 
 Form::Form() : _name("workContract"), _signedGrade(0),
-_requiredGrade(150), _isSigned(0)
+_executeGrade(150), _isSigned(0)
 {
 
 }
 
 Form::~Form() {}
 
-Form::Form(std::string const name, int formBool, int signedGrade, int requiredGrade)  : _name(name),
-_signedGrade(signedGrade), _requiredGrade(requiredGrade),_isSigned(formBool)
+Form::Form(std::string const name, int formBool, int signedGrade, int executeGrade)  : _name(name),
+_signedGrade(signedGrade), _executeGrade(executeGrade),_isSigned(formBool)
 {
     if (this->_signedGrade < 0)
         throw(GradeTooHighException());
@@ -18,7 +18,7 @@ _signedGrade(signedGrade), _requiredGrade(requiredGrade),_isSigned(formBool)
 }   
 
 Form::Form(Form const& cpy) : _signedGrade(cpy._signedGrade), 
-_requiredGrade(cpy._requiredGrade), _isSigned(cpy._isSigned)
+_executeGrade(cpy._executeGrade), _isSigned(cpy._isSigned)
 {
     *this = cpy;
 }
@@ -29,7 +29,7 @@ Form const& Form::operator=(Form const &other)
     if(this != &other)
     {
         this->_isSigned = other._isSigned;
-        this->_isSigned = other._requiredGrade;
+        this->_isSigned = other._executeGrade;
         this->_isSigned = other._signedGrade;
     }
     return(*this);
@@ -38,7 +38,7 @@ Form const& Form::operator=(Form const &other)
 std::ostream& operator<<(std::ostream& buffer, Form const& src)
 {
     std::cout << "Type of contract : " << src.getName() << std::endl;
-    std::cout << "Grade value : " << src.getRequiredGrade() << std::endl;
+    std::cout << "Grade value : " << src.getexecuteGrade() << std::endl;
     std::cout << "Is the contract signed ? yes 1 no 0: " << src.getIsSigned();
     return(buffer);
 }
@@ -54,9 +54,9 @@ int Form::getSignedGrade() const
     return(this->_signedGrade);
 }
 
-int Form::getRequiredGrade() const
+int Form::getexecuteGrade() const
 {
-    return(this->_requiredGrade);
+    return(this->_executeGrade);
 }
 
 int Form::getIsSigned() const
@@ -66,19 +66,19 @@ int Form::getIsSigned() const
 
 void Form::beSigned(Bureaucrat &bureaucrat)
 {
-    if(bureaucrat.getGrade() <= this->_requiredGrade && bureaucrat.getGrade() >= 0)
+    if(bureaucrat.getGrade() <= this->_signedGrade)
         this->_isSigned = 1;
     else
-        throw(Form::GradeTooLowException());
+        std::cout << "Contract couldn't be signed, because the grade is not high enough" << std::endl;
 }
 
 // exceptions implementation
 const char *Form::GradeTooHighException::what() const throw()
 {
-    return("* Grade is too hight to sign the contract ! *");
+    return("* Grade is too high *");
 }
 
 const char *Form::GradeTooLowException::what() const throw()
 {
-    return("* Grade is too low to sign the contract ! *");
+    return("* Grade is too low *");
 }

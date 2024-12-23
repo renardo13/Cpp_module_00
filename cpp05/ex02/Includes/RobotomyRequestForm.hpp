@@ -12,10 +12,10 @@ class RobotomyRequestForm : public AForm
         //canonical class
         RobotomyRequestForm();
         ~RobotomyRequestForm();
-        RobotomyRequestForm(AForm const &cpy);
+        RobotomyRequestForm(RobotomyRequestForm const &cpy);
         RobotomyRequestForm const& operator=(RobotomyRequestForm const& other);
 
         RobotomyRequestForm(std::string const target, int grade);
-};
+        void execute(Bureaucrat const& executor) const;
 
-std::ostream& operator<<(std::ostream& buffer, RobotomyRequestForm const& src);
+};

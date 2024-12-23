@@ -1,14 +1,14 @@
 #include "../Includes/AForm.hpp"
 #include "../Includes/PresidentialPardonForm.hpp"
 
-PresidentialPardonForm::PresidentialPardonForm() : AForm("Mr Jack", false, 150, 10) , _target("Mr Jack") {}
+PresidentialPardonForm::PresidentialPardonForm() : AForm("Presidential form", false, 25, 5) , _target("Presidential form") {}
 
 PresidentialPardonForm::~PresidentialPardonForm()
 {
 
 }
 
-PresidentialPardonForm::PresidentialPardonForm(PresidentialPardonForm const& cpy)
+PresidentialPardonForm::PresidentialPardonForm(PresidentialPardonForm const& cpy) : AForm(cpy)
 {
     *this = cpy;
 }
@@ -20,16 +20,14 @@ PresidentialPardonForm const& PresidentialPardonForm::operator=(PresidentialPard
     return(*this);
 }
 
-PresidentialPardonForm::PresidentialPardonForm(std::string target, int grade) : AForm("Mr Jack", false, 150, grade) , _target(target) {}
+PresidentialPardonForm::PresidentialPardonForm(std::string target, int signedGrade) : AForm("Presidential form", false, signedGrade, 5) , _target(target) {}
 
 
 void PresidentialPardonForm::execute(Bureaucrat const& executor) const
 {
-    if(this->getIsSigned() && executor.getGrade() > this->getRequiredGrade())
-    {
-        std::cout << "** The form is signed **" << std::endl;
-    }
-    
-
-
+    if(!this->getIsSigned())
+        throw FormNotSigned();
+    if (executor.getGrade() > this->getexecuteGrade())
+        throw CannotExecuteForm();
+    std::cout << "Informs that " << this->_target << " has been pardoned by Zaphod Beeblebrox" << std::endl;
 }

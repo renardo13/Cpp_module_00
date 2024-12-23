@@ -2,7 +2,7 @@ SRC = Srcs/main.cpp Srcs/Bureaucrat.cpp Srcs/Form.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
+FLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -fPIE
 NAME = Form
 INCLUDE = Includes
 HEADERS = $(wildcard $(INCLUDE)/*.h)

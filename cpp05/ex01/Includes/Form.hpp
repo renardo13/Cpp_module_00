@@ -11,14 +11,14 @@ class Form
     private:
         std::string const _name;
         int const _signedGrade;
-        int const _requiredGrade;
+        int const _executeGrade;
         bool _isSigned;
 
     public:
         //canonical class form
         Form();
         ~Form();
-        Form(std::string const name, int formBool, int requiredGrade, int signedGrade);
+        Form(std::string const name, int formBool, int executeGrade, int signedGrade);
         Form(Form const &cpy);
         Form const& operator=(Form const& other);
 
@@ -39,7 +39,7 @@ class Form
         //getter
         std::string getName() const;
         int getIsSigned() const;
-        int getRequiredGrade() const;
+        int getexecuteGrade() const;
         int getSignedGrade() const;
 };
 

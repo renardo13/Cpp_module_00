@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <exception>
+#include "Bureaucrat.hpp"
 #include "AForm.hpp"
 
 class PresidentialPardonForm : public AForm
@@ -16,6 +17,5 @@ class PresidentialPardonForm : public AForm
         PresidentialPardonForm const& operator=(PresidentialPardonForm const& other);
 
         PresidentialPardonForm(std::string const target, int grade);
+        void execute(Bureaucrat const& executor) const;
 };
-
-std::ostream& operator<<(std::ostream& buffer, PresidentialPardonForm const& src);
