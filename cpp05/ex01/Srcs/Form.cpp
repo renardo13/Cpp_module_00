@@ -1,7 +1,7 @@
 #include "Form.hpp"
 
-Form::Form() : _name("workContract"), _signedGrade(0),
-_executeGrade(150), _isSigned(0)
+Form::Form() : _name("Form"), _signedGrade(150),
+_executeGrade(150), _isSigned(false)
 {
 
 }
@@ -38,8 +38,7 @@ Form const& Form::operator=(Form const &other)
 std::ostream& operator<<(std::ostream& buffer, Form const& src)
 {
     std::cout << "Type of contract : " << src.getName() << std::endl;
-    std::cout << "Grade value : " << src.getexecuteGrade() << std::endl;
-    std::cout << "Is the contract signed ? yes 1 no 0: " << src.getIsSigned();
+    std::cout << "The grade minimum to sign form is " << src.getexecuteGrade() << std::endl;
     return(buffer);
 }
 
@@ -64,12 +63,15 @@ int Form::getIsSigned() const
     return(this->_isSigned);
 }
 
-void Form::beSigned(Bureaucrat &bureaucrat)
+void AForm::beSigned(Bureaucrat &bureaucrat)
 {
-    if(bureaucrat.getGrade() <= this->_signedGrade)
+    if (bureaucrat.getGrade() <= this->_signedGrade)
+    {
+        std::cout << "Form is signed !" << std::endl;
         this->_isSigned = 1;
+    }
     else
-        std::cout << "Contract couldn't be signed, because the grade is not high enough" << std::endl;
+        std::cout << "Form couldn't be signed, because the grade is not high enough" << std::endl;
 }
 
 // exceptions implementation

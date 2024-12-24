@@ -20,7 +20,7 @@ ShrubberyCreationForm const &ShrubberyCreationForm::operator=(ShrubberyCreationF
     return (*this);
 }
 
-ShrubberyCreationForm::ShrubberyCreationForm(std::string target, int signedGrade) : AForm("Shrubbery", false, signedGrade, 137), _target(target) {}
+ShrubberyCreationForm::ShrubberyCreationForm(std::string target, int signedGrade) : AForm(target, false, signedGrade, 137), _target(target) {}
 
 void ShrubberyCreationForm::execute(Bureaucrat const &executor) const
 {

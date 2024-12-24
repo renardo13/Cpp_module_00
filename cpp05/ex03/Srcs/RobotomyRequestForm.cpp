@@ -19,7 +19,7 @@ RobotomyRequestForm const& RobotomyRequestForm::operator=(RobotomyRequestForm co
     return(*this);
 }
 
-RobotomyRequestForm::RobotomyRequestForm(std::string target, int signedGrade) : AForm(target, false, signedGrade, 45) , _target(target) {}
+RobotomyRequestForm::RobotomyRequestForm(std::string target, int signedGrade) : AForm("Robotomy form", false, signedGrade, 45) , _target(target) {}
 
 
 void RobotomyRequestForm::execute(Bureaucrat const& executor) const

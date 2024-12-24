@@ -1,14 +1,15 @@
 #include "../Includes/Bureaucrat.hpp"
 #include "../Includes/PresidentialPardonForm.hpp"
 #include "../Includes/ShrubberyCreationForm.hpp"
+#include "../Includes/RobotomyRequestForm.hpp"
 #include "../Includes/AForm.hpp"
 
 int main(void)
-{
+{ 
+    Bureaucrat Gilbert("Gilbert", 5);
+    AForm *aform = new PresidentialPardonForm();
     try
     {
-        Bureaucrat Gilbert("Gilbert", 25);
-        AForm *aform = new PresidentialPardonForm();
         aform->beSigned(Gilbert);
         aform->execute(Gilbert);
     }
@@ -16,17 +17,35 @@ int main(void)
     {
        std::cerr << e.what() << std::endl;
     }
+    // increment the grade so the grade becames too low
+    Gilbert++;
+    delete aform;
 
+    std::cout << std::string(40, '_') << std::endl;
+    aform = new ShrubberyCreationForm();
     try
     {
-        Bureaucrat Gilbert("Gilbert", 19);
-        AForm *treeForm = new ShrubberyCreationForm("TreeForm", 20);
-        treeForm->beSigned(Gilbert);
-        treeForm->execute(Gilbert);
+        aform->beSigned(Gilbert);
+        aform->execute(Gilbert);
     }
     catch(const std::exception& e)
     {
        std::cerr << e.what() << std::endl;
     }
+    delete aform;
+    
+    std::cout << std::string(40, '_') << std::endl;
+    aform = new RobotomyRequestForm();
+    Bureaucrat Jerome("Jerome", 44);
+    try
+    {
+        // aform->beSigned(Jerome);
+        aform->execute(Jerome);
+    }
+    catch(const std::exception& e)
+    {
+       std::cerr << e.what() << std::endl;
+    }
+    delete aform;
     return (0);
 }

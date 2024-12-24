@@ -1,11 +1,12 @@
 SRC = Srcs/main.cpp Srcs/Bureaucrat.cpp \
 Srcs/AForm.cpp Srcs/ShrubberyCreationForm.cpp \
-Srcs/RobotomyRequestForm.cpp Srcs/PresidentialPardonForm.cpp
+Srcs/RobotomyRequestForm.cpp Srcs/PresidentialPardonForm.cpp \
+Srcs/Intern.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
 FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
-NAME = 28B
+NAME = Intern
 INCLUDE = Includes
 HEADERS = $(wildcard $(INCLUDE)/*.h)
 

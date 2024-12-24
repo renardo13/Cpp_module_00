@@ -1,11 +1,9 @@
-SRC = Srcs/main.cpp Srcs/Bureaucrat.cpp \
-Srcs/AForm.cpp Srcs/ShrubberyCreationForm.cpp \
-Srcs/RobotomyRequestForm.cpp Srcs/PresidentialPardonForm.cpp
+SRC = Srcs/main.cpp Srcs/ScalarConverter.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
 FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
-NAME = 28B
+NAME = convert
 INCLUDE = Includes
 HEADERS = $(wildcard $(INCLUDE)/*.h)
 

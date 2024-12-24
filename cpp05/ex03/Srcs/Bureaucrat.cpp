@@ -2,7 +2,7 @@
 
 Bureaucrat::Bureaucrat() : _name("Lilou")
 {
-    std::cout << "Bureaucrat is added" << std::endl;
+    std::cout << "Bureaucrat is add" << std::endl;
 }
 
 Bureaucrat::~Bureaucrat() {}
@@ -13,7 +13,7 @@ Bureaucrat::Bureaucrat(std::string name, int grade) : _name(name), _grade(grade)
         throw(GradeTooLowException());
     if (grade < 0)
         throw(GradeTooHighException());
-    std::cout << "Bureaucrat is added" << std::endl;
+    std::cout << "Bureaucrat is add" << std::endl;
 }
 
 Bureaucrat::Bureaucrat(Bureaucrat const &cpy)
@@ -32,7 +32,7 @@ Bureaucrat const &Bureaucrat::operator=(Bureaucrat const &other)
 std::ostream &operator<<(std::ostream &buffer, Bureaucrat const &src)
 {
     std::cout << "Name of the Bureaucrat : " << src.getName() << std::endl;
-    std::cout << "Grade value : " << src.getGrade();
+    // std::cout << "Grade value : " << src.getGrade();
     return (buffer);
 }
 
@@ -46,6 +46,19 @@ void Bureaucrat::operator--(int)
     this->_grade++;
 }
 
+void Bureaucrat::signAForm(AForm &form)
+{
+    if (form.getIsSigned())
+        std::cout << '*' << this->getName() << " signed form : " << form.getName() << " Congrats !*" << std::endl;
+    else
+    {
+        if (this->_grade > 150)
+            throw(GradeTooLowException());
+        if (this->_grade < 0)
+            throw(GradeTooHighException());
+    }
+}
+
 // getter
 std::string const Bureaucrat::getName() const
 {
@@ -55,6 +68,12 @@ std::string const Bureaucrat::getName() const
 int Bureaucrat::getGrade() const
 {
     return (this->_grade);
+}
+
+void Bureaucrat::executeForm(AForm const& form)
+{
+    if(form.getIsSigned())
+        std::cout << "Bureaucrat execute form" << std::endl;
 }
 
 // exceptions
