@@ -2,11 +2,9 @@
 
 #include <iostream>
 
-template <typename T>
-void iter(T& array, T size, void funct(T&))
+template <typename T, typename funct>
+void iter(T& array, size_t size, funct func)
 {
-    for(int i = 0; i <  size; i++)
-    {
-        funct(array[i]);
-    }
+    for(size_t i = 0; i < size; i++)
+        func(array[i]);
 }
