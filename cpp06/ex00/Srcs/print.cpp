@@ -2,7 +2,7 @@
 
 void alphaPrint(std::string str)
 {
-    if (str == "nan" || str == "+inf" || str == "+inf")
+    if (str == "nan")
     {
         std::cout << "Char   : Impossible" << std::endl;
         std::cout << "Int    : Impossible" << std::endl;
