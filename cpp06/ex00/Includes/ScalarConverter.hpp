@@ -8,9 +8,6 @@
 #include <math.h>
 
 #define TYPE_NOT_FOUND "Type was not found.\n"
-#define INT_OVERFLOW "Int overflow.\n"
-#define FLOAT_OVERFLOW "Float overflow.\n"
-#define DOUBLE_OVERFLOW "Double overflow.\n"
 
 enum type
 {
@@ -34,7 +31,12 @@ class ScalarConverter
 
 //parsing functions
 int noPrintable(std::string s);
+int isPrint(int nb);
 int isAlpha(std::string s);
 int isDigit(std::string s);
-int whichType(std::string s);
+int whichType(std::string s, int *nbrAfterPoint);
+
+//print functions
+void alphaPrint(std::string str);
+void numberPrint(std::string str, int type, int nbrAfterPoint);
 

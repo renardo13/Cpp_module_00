@@ -1,4 +1,4 @@
-SRC = Srcs/main.cpp Srcs/ScalarConverter.cpp
+SRC = Srcs/main.cpp Srcs/ScalarConverter.cpp Srcs/parsing.cpp Srcs/print.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
