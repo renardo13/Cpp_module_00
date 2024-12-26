@@ -5,7 +5,7 @@
 template <typename T> // You have to reencapsulate the typename
 void swap(T const& a, T const& b)
 {
-    void *tmp;
+    T tmp;
 
     tmp = b;
     b = a;

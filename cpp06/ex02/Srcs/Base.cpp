@@ -2,7 +2,13 @@
 
 Base * generate(void)
 {
-    return(new B());
+    srand(time(0));
+	int	i = rand() % 3;
+	if (i == 0)
+		return (new A());
+	else if (i == 1)
+		return (new B());
+    return(new C());
 }
 
 void identify(Base* p)
@@ -23,7 +29,8 @@ void identify(Base& p)
     try 
     {
         tmp = dynamic_cast<A &>(p);
-    } 
+        std::cout << "Class A" << std::endl;
+    }
     catch (std::exception &e) {}
     try 
     {

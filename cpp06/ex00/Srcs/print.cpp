@@ -17,12 +17,7 @@ void alphaPrint(std::string str)
         std::cout << "Double : " << static_cast<double>(str[0]) << std::endl;
     }
     else
-    {
-        std::cout << "Char   : " << str << std::endl;
-        std::cout << "Int    : Impossible" << std::endl;
-        std::cout << "Float  : Impossible" << std::endl;
-        std::cout << "Double : Impossible" << std::endl;
-    }
+        std::cout << "String cannot be convert" << str << std::endl;
 }
 
 void numberPrint(std::string str, int type, int nbrAfterPoint)

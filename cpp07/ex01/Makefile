@@ -1,9 +1,9 @@
-SRC = Srcs/main.cpp Srcs/Base.cpp
+SRC = Srcs/main.cpp Srcs/Whatever.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
 FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
-NAME = Base
+NAME = iter
 INCLUDE = Includes
 HEADERS = $(wildcard $(INCLUDE)/*.h)
 

@@ -4,12 +4,11 @@
 
 class Data
 {
-    private:
-        
-    
-    public:int nb;
+    public:
         Data();
         ~Data();
         Data(Data const& cpy);
         Data const& operator=(Data const& other);
+        
+        int nb;
 };

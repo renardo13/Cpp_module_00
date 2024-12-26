@@ -1,6 +1,3 @@
-#include "../Includes/A.hpp"
-#include "../Includes/B.hpp"
-#include "../Includes/C.hpp"
 #include "../Includes/Base.hpp"
 
 int main(void)
