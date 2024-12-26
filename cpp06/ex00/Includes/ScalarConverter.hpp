@@ -38,7 +38,3 @@ int isAlpha(std::string s);
 int isDigit(std::string s);
 int whichType(std::string s);
 
-//converting functions
-int stringToInt(const std::string& str);
-float stringToFloat(std::string s);
-double stringToDouble(std::string s);
