@@ -2,52 +2,33 @@
 
 #include <iostream>
 #include <cstring>
+#include <string>
 #include <fstream>
 #include <set>
 #include <cstdlib>
+#include <limits>
 
-class Date : public std::set<char *>
+class Btc
 {
- 
-    public:
-        Date();
-        ~Date();
-        Date(Date const& cpy);
-        Date const& operator=(Date const& other);
-       bool operator<(const Date& other) const {
-        (void)other;
-        return 1;
-    }
-          char* year;
-        char* month;
-        char* day;
-        
-};
-std::ostream& operator<<(std::ostream&, Date const& date);
-std::ostream& operator<<(std::ostream& os, const std::set<Date>& dates);
-
-class ExchangeRate : public std::set<float>
-{
-    public:
-        ExchangeRate() {};
-        ~ExchangeRate() {};
-        // ExchangeRate (ExchangeRate const& cpy);
-        // ExchangeRate const& operator=(ExchangeRate const& other);
-
-        std::set<Date> date;
-        std::set<double> value;
+public:
+    Btc() {};
+    ~Btc() {};
     
-
+    std::set<std::string> date;
+    std::set<std::string> value;
 };
 
-class BitcoinAmount : public std::set<float>
+std::ostream &operator<<(std::ostream &os, Btc const &btc)
 {
-    public:
-        BitcoinAmount() {};
-        ~BitcoinAmount() {};
-        BitcoinAmount(BitcoinAmount const& cpy);
-        BitcoinAmount const& operator=(BitcoinAmount const& other);
-        
-        float key;
-        float value;
-};
+    std::set<std::string>::const_iterator it_date = btc.date.begin();
+    std::set<std::string>::const_iterator it_value = btc.value.begin();
+
+    while (it_date != btc.date.end() && it_value != btc.value.end())
+    {
+        os << *it_date << " : " << *it_value << std::endl;
+        ++it_date;
+        ++it_value;
+    }
+    
+    return os;
+}

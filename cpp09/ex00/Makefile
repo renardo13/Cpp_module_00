@@ -1,8 +1,8 @@
-SRC = Srcs/main.cpp Srcs/Date.cpp
+SRC = Srcs/main.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror -std=c++98 -g3
+FLAGS = -Wall -Wextra -Werror  -g3
 NAME = btc
 INCLUDE = Includes
 HEADERS = $(wildcard $(Includes)/*.h)
