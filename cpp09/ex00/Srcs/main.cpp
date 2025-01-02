@@ -47,12 +47,11 @@ void split_input(Btc &btc, const char *sep, const char *file_name)
         {
             std::string date_part = line.substr(0, sep_pos);
             std::string value_part = line.substr(sep_pos + 1);
-            const char* valid_date = is_date_valid(const_cast<char*>(date_part.c_str()));
-            std::cout << valid_date << std::endl;
-            btc.date.insert(valid_date);
-            const char* valid_value = is_value_valid(const_cast<char*>(value_part.c_str()));
-            std::cout << valid_value << std::endl;
-            btc.value.insert(valid_value);
+            // const char* valid_date = is_date_valid(const_cast<char*>(date_part.c_str()));
+            // const char* valid_value = is_value_valid(const_cast<char*>(value_part.c_str()));
+            std::string concatenated = date_part + value_part;
+            btc.date.insert(concatenated); 
+
             
         }
     }
@@ -65,7 +64,6 @@ void calcul_price(Btc rate, Btc amount)
     std::set<std::string>::iterator it_amount_date;
     std::set<std::string>::iterator ite_rate_date;
     std::set<std::string>::iterator ite_amount_date;
-    int i;
 
     it_rate_date = rate.date.begin();
     it_amount_date = amount.date.begin();
@@ -91,7 +89,8 @@ int main(int ac, char **av)
         Btc amount;
         split_input(rate, ",", av[1]);
         split_input(amount, "|", "input.txt");
-        calcul_price(rate, amount);
+        std::cout << amount << std::endl;
+        // calcul_price(rate, amount);
     }
     else
         std::cout << "Error: could not open file." << std::endl;
