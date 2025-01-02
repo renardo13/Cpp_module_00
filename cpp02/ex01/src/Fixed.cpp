@@ -48,13 +48,3 @@ void Fixed::setRawBits(int const raw)
 	this->_nb = raw * roundf(1 << Fixed::_fracBits);
 	std::cout << this->_nb << std::endl;
 }
-
-float toFloat( void ) const
-{
-
-}
-
-int toInt( void ) const
-{
-
-}
