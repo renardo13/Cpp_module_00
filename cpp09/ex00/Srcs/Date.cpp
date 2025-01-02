@@ -4,20 +4,27 @@ Date::Date() {};
 
 Date::~Date() {};
 
-Date::Date(Date const& cpy)
+Date::Date(Date const &cpy)
 {
     if (this != &cpy)
         *this = cpy;
 }
 
-Date const& Date::operator=(Date const& other)
+Date const &Date::operator=(Date const &other)
 {
     (void)other;
-    return(*this);
+    return (*this);
 }
 
-std::ofstream& operator<<(std::ofstream& stream, Date const& date)
+std::ostream &operator<<(std::ostream &stream, Date const &date)
 {
-    stream << date.year << "-" << date.mounth << "-" << date.day << std::endl;
-    return(stream);
+    stream << date.year << "-" << date.month << "-" << date.day << std::endl;
+    return (stream);
+}
+
+std::ostream &operator<<(std::ostream &os, const std::set<Date> &dates) {
+if (dates.empty()) {
+        os << "Le set est vide." << std::endl;
+    }
+    return os;
 }

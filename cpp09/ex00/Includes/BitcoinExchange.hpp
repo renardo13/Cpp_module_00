@@ -8,18 +8,23 @@
 
 class Date : public std::set<char *>
 {
+ 
     public:
         Date();
         ~Date();
         Date(Date const& cpy);
         Date const& operator=(Date const& other);
-       
-
-        char* year;
-        char* mounth;
+       bool operator<(const Date& other) const {
+        (void)other;
+        return 1;
+    }
+          char* year;
+        char* month;
         char* day;
+        
 };
-std::ofstream& operator<<(std::ofstream&, const Date&);
+std::ostream& operator<<(std::ostream&, Date const& date);
+std::ostream& operator<<(std::ostream& os, const std::set<Date>& dates);
 
 class ExchangeRate : public std::set<float>
 {
