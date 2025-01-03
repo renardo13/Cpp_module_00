@@ -1,36 +1,71 @@
-#pragma once
+
+#ifndef BTC_HPP
+#define BTC_HPP
 
 #include <iostream>
-#include <cstring>
-#include <string>
-#include <fstream>
-#include <set>
 #include <cstdlib>
 #include <limits>
 #include <cctype>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 class Btc
 {
-public:
-    Btc() {};
-    ~Btc() {};
-
-    std::set<std::string> date;
-    bool operator<(const std::string &a) const
-    {
-        return (this->date.substr(0, 10) < a.substr(0, 10));  // Comparer les 10 premiers caractères (la date)
-    }
-    
+    public:
+        Btc() {};
+        ~Btc() {};
+        Btc(const Btc &other)
+        {
+            this->date = other.date;
+        }
+        Btc &operator=(const Btc &other)
+        {
+            if (this != &other)
+                this->date = other.date;
+            return *this;
+        }
+        std::string date;
 };
-std::ostream &operator<<(std::ostream &os, Btc const &btc)
-{
-    std::set<std::string>::const_iterator it_date = btc.date.begin();
 
-    while (it_date != btc.date.end())
+bool isAllChar(const std::string &str)
+{
+    if (!str.empty())
+    {
+        for (size_t i = 0; i < str.size(); ++i)
+        {
+            if (isdigit(str[i]))
+                return false;
+        }
+    }
+    return true;
+}
+
+bool isAllDigit(const std::string &str)
+{
+    if (!str.empty())
+    {
+        for (size_t i = 0; i < str.size(); ++i)
+        {
+            if (isalpha(str[i]))
+                return false;
+        }
+    }
+    return true;
+}
+
+std::ostream &operator<<(std::ostream &os, std::vector<std::string> &btc)
+{
+    std::vector<std::string>::iterator it_date = btc.begin();
+
+    while (it_date != btc.end())
     {
         os << *it_date;
         ++it_date;
-        std::cout << std::endl;
+        os << std::endl;
     }
     return os;
 }
+
+#endif

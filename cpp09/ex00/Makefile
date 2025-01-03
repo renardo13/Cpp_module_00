@@ -2,7 +2,7 @@ SRC = Srcs/main.cpp
 OBJ = $(SRC:.cpp=.o)
 CC = c++
 RM = rm -f
-FLAGS = -Wall -Wextra -Werror  -g3
+FLAGS = -Wall -Wextra -Werror -g3 -std=c++98
 NAME = btc
 INCLUDE = Includes
 HEADERS = $(wildcard $(Includes)/*.h)

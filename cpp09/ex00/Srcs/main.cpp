@@ -1,22 +1,11 @@
 #include "BitcoinExchange.hpp"
-/* The exercise is aim to learn how to match differents values ordered in key / value, like a dictionnary the most efficiently */
-// I use an associative contener to do that
 
-std::string is_value_valid(std::string value)
-{
-    double nb = strtod(value.c_str(), NULL);
-    if (nb < 0)
-        return ("Error: value is negative");
-    if (nb > std::numeric_limits<int>::max())
-        return ("Error: value is too big");
-    return (value);
-}
 std::string is_date_valid(const std::string &res)
 {
     if (res.empty())
         return "Error: date is missing";
     size_t sep_pos = res.find(" ");
-    if (sep_pos == std::string::npos)
+    if (sep_pos == std::string::npos || !isAllDigit(res))
         return "Error: bad input";
     std::string date = res.substr(0, sep_pos);
     size_t first_dash = date.find("-");
@@ -45,14 +34,15 @@ std::string is_date_valid(const std::string &res)
     return (res);
 }
 
-void split_input(Btc &btc, std::string sep, const char *file_name)
+std::vector<std::string> split_input(std::string sep, const char *file_name)
 {
     std::string line;
     std::ifstream file(file_name);
+    std::vector<std::string> vec;
     if (!file.is_open())
     {
         std::cout << "Error: could not open file." << std::endl;
-        return;
+        return vec;
     }
     std::getline(file, line);
     while (std::getline(file, line))
@@ -60,50 +50,81 @@ void split_input(Btc &btc, std::string sep, const char *file_name)
         if (line.empty() || line[0] == ' ')
             continue;
         size_t sep_pos = line.find(sep);
-        std::string date_part = line.substr(0, sep_pos);
-        std::string value_part = line.substr(sep_pos + 1);
-        std::string concat_str;
-        if (sep == "|")
-            concat_str = date_part + value_part;
+        if (sep_pos == std::string::npos)
+            vec.push_back(is_date_valid(line));
         else
-            concat_str = date_part + " " + value_part;
-        btc.date.insert(is_date_valid(concat_str));
+        {
+            std::string date_part = line.substr(0, sep_pos);
+            std::string value_part = line.substr(sep_pos + 1);
+            std::string concat_str;
+            if (sep == "|")
+                concat_str = date_part + value_part;
+            else
+                concat_str = date_part + " " + value_part;
+            vec.push_back(is_date_valid(concat_str));
+        }
     }
     file.close();
+    return vec;
 }
 
-void calcul_price(Btc rate, Btc amount)
+std::string toString(float res)
 {
-    std::set<std::string>::iterator it_rate_date;
-    std::set<std::string>::iterator it_amount_date;
-    std::set<std::string>::iterator ite_rate_date;
-    std::set<std::string>::iterator ite_amount_date;
+    std::ostringstream oss;
+    oss << res;
+    std::string str = oss.str();
+    return str;
+}
 
-    it_rate_date = rate.date.begin();
-    it_amount_date = amount.date.begin();
-    while (it_rate_date != it_amount_date)
+std::vector<std::string> calcul_exchange_rate(std::vector<std::string> amount, std::vector<std::string> rate)
+{
+    std::vector<std::string> final_set;
+    std::vector<std::string>::iterator rate_it = rate.begin();
+    std::vector<std::string>::iterator amount_it = amount.begin();
+
+    for (; amount_it != amount.end(); amount_it++)
     {
-        it_rate_date++;
+
+        if (isAllChar(*amount_it))
+            final_set.push_back(*amount_it);
+        else
+        {
+            for (; rate_it != rate.end(); rate_it++)
+            {
+                std::string rate_date = *rate_it;
+                std::string amount_date = *amount_it;
+                if (rate_date.substr(0, 9) == amount_date.substr(0, 9)) // check only the date with substr
+                {
+                    std::string nb_amount = amount_date.substr(amount_date.find(' ') + 1);
+                    float nb_am = strtod(nb_amount.c_str(), NULL);
+                    std::string nb_rate = rate_date.substr(rate_date.find(' '));
+                    float nb = strtod(nb_rate.c_str(), NULL);
+                    float res = nb_am * nb;
+                    final_set.push_back(amount_date.substr(0, amount_date.find(' ')) + " =>" + nb_amount + " = " + toString(res));
+                    rate_it = rate.begin();
+                    break;
+                }
+            }
+        }
     }
-    ite_rate_date = rate.value.begin();
-    while (it_rate_date != it_amount_date)
-    {
-        it_rate_date++;
-    }
+    return (final_set);
 }
 
 int main(int ac, char **av)
 {
     if (ac == 2)
     {
-        Btc rate;
-        Btc amount;
-        split_input(rate, ",", av[1]);
-        split_input(amount, "|", "input.txt");
-        std::cout << rate << std::endl;
-        std::cout << amount << std::endl;
-        // calcul_price(rate, amount);
+        std::vector<std::string> amount;
+        std::vector<std::string> rate;
+        std::vector<std::string> final_set;
+
+        amount = split_input("|", "input.txt");
+        rate = split_input(",", av[1]);
+        final_set = calcul_exchange_rate(amount, rate);
+        std::cout << final_set;
     }
     else
+    {
         std::cout << "Error: could not open file." << std::endl;
+    }
 }
