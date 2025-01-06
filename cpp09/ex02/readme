@@ -1,0 +1,16 @@
+Utilier std::list<int>
+et std::array<int, 3000>
+
+
+- Use 2 differents containers
+
+- Start by sort elements and split list in two recursivly to form pairs and sorti it when it left 2 numbers. If it not pairs let it.
+collection de paires (bi,ai)(bi​,ai​). the biggest element of b2 should be smaller than the biggest element of a2.
+
+faire une fonction find_biggest.
+
+- On split en haine princpal t chaine secondaire, chaine ax .. chaine bx ..
+
+- Insert binary elements of the pend to the main list tu commene par cherche l eplacement en se basant sr la suite de jacobstal, voir plus de precisions.
+
+Pourquoi on doit atteindre un certain niveau pour la suite de jacobsthal ?
