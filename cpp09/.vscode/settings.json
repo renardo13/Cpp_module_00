@@ -50,7 +50,10 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
+<<<<<<< HEAD
         "list": "cpp",
+=======
+>>>>>>> refs/remotes/origin/main
         "sstream": "cpp"
     }
 }
