@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <limits>
 #include <cctype>
-#include <vector>
+#include <list>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -55,9 +55,9 @@ bool isAllDigit(const std::string &str)
     return true;
 }
 
-std::ostream &operator<<(std::ostream &os, std::vector<std::string> &btc)
+std::ostream &operator<<(std::ostream &os, std::list<std::string> &btc)
 {
-    std::vector<std::string>::iterator it_date = btc.begin();
+    std::list<std::string>::iterator it_date = btc.begin();
 
     while (it_date != btc.end())
     {

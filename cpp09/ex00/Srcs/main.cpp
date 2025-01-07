@@ -1,5 +1,14 @@
 #include "BitcoinExchange.hpp"
 
+#include "BitcoinExchange.hpp"
+#include <iostream>
+#include <fstream>
+#include <list>
+#include <string>
+#include <sstream>
+#include <cstdlib>
+#include <limits>
+
 std::string is_date_valid(const std::string &res)
 {
     if (res.empty())
@@ -26,23 +35,23 @@ std::string is_date_valid(const std::string &res)
         ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30))
         return "Error: day is invalid";
     std::string value = res.substr(sep_pos + 1);
-    double nb = strtod(value.c_str(), NULL);
+    double nb = std::strtod(value.c_str(), NULL);
     if (nb < 0)
-        return ("Error: value is not a positive number");
+        return "Error: value is not a positive number";
     if (nb > std::numeric_limits<int>::max())
-        return ("Error: value is too large");
-    return (res);
+        return "Error: value is too large";
+    return res;
 }
 
-std::vector<std::string> split_input(std::string sep, const char *file_name)
+std::list<std::string> split_input(const std::string &sep, const char *file_name)
 {
     std::string line;
     std::ifstream file(file_name);
-    std::vector<std::string> vec;
+    std::list<std::string> lst;
     if (!file.is_open())
     {
         std::cout << "Error: could not open file." << std::endl;
-        return vec;
+        return lst;
     }
     std::getline(file, line);
     while (std::getline(file, line))
@@ -51,7 +60,7 @@ std::vector<std::string> split_input(std::string sep, const char *file_name)
             continue;
         size_t sep_pos = line.find(sep);
         if (sep_pos == std::string::npos)
-            vec.push_back(is_date_valid(line));
+            lst.push_back(is_date_valid(line));
         else
         {
             std::string date_part = line.substr(0, sep_pos);
@@ -61,60 +70,60 @@ std::vector<std::string> split_input(std::string sep, const char *file_name)
                 concat_str = date_part + value_part;
             else
                 concat_str = date_part + " " + value_part;
-            vec.push_back(is_date_valid(concat_str));
+            lst.push_back(is_date_valid(concat_str));
         }
     }
     file.close();
-    return vec;
+    return lst;
 }
 
 std::string toString(float res)
 {
     std::ostringstream oss;
     oss << res;
-    std::string str = oss.str();
-    return str;
+    return oss.str();
 }
 
-std::vector<std::string> calcul_exchange_rate(std::vector<std::string> amount, std::vector<std::string> rate)
+std::list<std::string> calcul_exchange_rate(std::list<std::string> amount, std::list<std::string> rate)
 {
-    std::vector<std::string> final_set;
-    std::vector<std::string>::iterator rate_it = rate.begin();
-    std::vector<std::string>::iterator amount_it = amount.begin();
+    std::list<std::string> final_set;
+    std::list<std::string>::iterator rate_it = rate.begin();
+    std::list<std::string>::iterator amount_it = amount.begin();
     int match_flag;
 
-    for (; amount_it != amount.end(); amount_it++)
+    for (; amount_it != amount.end(); ++amount_it)
     {
-
         match_flag = 0;
         if (isAllChar(*amount_it))
+        {
             final_set.push_back(*amount_it);
+        }
         else
         {
             std::string amount_date = *amount_it;
-            for (; rate_it != rate.end(); rate_it++)
+            for (; rate_it != rate.end(); ++rate_it)
             {
                 std::string rate_date = *rate_it;
-                if (rate_date.substr(0, 9) == amount_date.substr(0, 9)) // check only the date with substr
+                if (rate_date.substr(0, 9) == amount_date.substr(0, 9))
                 {
                     std::string nb_amount = amount_date.substr(amount_date.find(' ') + 1);
-                    float nb_am = strtod(nb_amount.c_str(), NULL);
+                    float nb_am = std::strtod(nb_amount.c_str(), NULL);
                     std::string nb_rate = rate_date.substr(rate_date.find(' '));
-                    float nb = strtod(nb_rate.c_str(), NULL);
+                    float nb = std::strtod(nb_rate.c_str(), NULL);
                     float res = nb_am * nb;
                     final_set.push_back(amount_date.substr(0, amount_date.find(' ')) + " =>" + nb_amount + " = " + toString(res));
                     rate_it = rate.begin();
                     match_flag = 1;
                     break;
                 }
-                else if (amount_date.substr(0, 9) > rate_date.substr(0, 9)) // if we pass the date without find it
+                else if (amount_date.substr(0, 9) > rate_date.substr(0, 9))
                 {
                     rate_date = *(--rate_it);
                     std::cout << "coucou" << std::endl;
                     std::string nb_amount = amount_date.substr(amount_date.find(' ') + 1);
-                    float nb_am = strtod(nb_amount.c_str(), NULL);
+                    float nb_am = std::strtod(nb_amount.c_str(), NULL);
                     std::string nb_rate = rate_date.substr(rate_date.find(' '));
-                    float nb = strtod(nb_rate.c_str(), NULL);
+                    float nb = std::strtod(nb_rate.c_str(), NULL);
                     float res = nb_am * nb;
                     final_set.push_back(amount_date.substr(0, amount_date.find(' ')) + " =>" + nb_amount + " = " + toString(res));
                     rate_it = rate.begin();
@@ -123,21 +132,26 @@ std::vector<std::string> calcul_exchange_rate(std::vector<std::string> amount, s
             }
         }
     }
-    return (final_set);
+    return final_set;
 }
 
 int main(int ac, char **av)
 {
     if (ac == 2)
     {
-        std::vector<std::string> amount;
-        std::vector<std::string> rate;
-        std::vector<std::string> final_set;
+        std::list<std::string> amount;
+        std::list<std::string> rate;
+        std::list<std::string> final_set;
 
         amount = split_input("|", "input.txt");
         rate = split_input(",", av[1]);
         final_set = calcul_exchange_rate(amount, rate);
-        std::cout << final_set;
+
+        std::list<std::string>::iterator it = final_set.begin();
+        for (; it != final_set.end(); ++it)
+        {
+            std::cout << *it << std::endl;
+        }
     }
     else
     {
