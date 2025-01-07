@@ -81,20 +81,36 @@ std::vector<std::string> calcul_exchange_rate(std::vector<std::string> amount, s
     std::vector<std::string> final_set;
     std::vector<std::string>::iterator rate_it = rate.begin();
     std::vector<std::string>::iterator amount_it = amount.begin();
+    int match_flag;
 
     for (; amount_it != amount.end(); amount_it++)
     {
 
+        match_flag = 0;
         if (isAllChar(*amount_it))
             final_set.push_back(*amount_it);
         else
         {
+            std::string amount_date = *amount_it;
             for (; rate_it != rate.end(); rate_it++)
             {
                 std::string rate_date = *rate_it;
-                std::string amount_date = *amount_it;
                 if (rate_date.substr(0, 9) == amount_date.substr(0, 9)) // check only the date with substr
                 {
+                    std::string nb_amount = amount_date.substr(amount_date.find(' ') + 1);
+                    float nb_am = strtod(nb_amount.c_str(), NULL);
+                    std::string nb_rate = rate_date.substr(rate_date.find(' '));
+                    float nb = strtod(nb_rate.c_str(), NULL);
+                    float res = nb_am * nb;
+                    final_set.push_back(amount_date.substr(0, amount_date.find(' ')) + " =>" + nb_amount + " = " + toString(res));
+                    rate_it = rate.begin();
+                    match_flag = 1;
+                    break;
+                }
+                else if (amount_date.substr(0, 9) > rate_date.substr(0, 9)) // if we pass the date without find it
+                {
+                    rate_date = *(--rate_it);
+                    std::cout << "coucou" << std::endl;
                     std::string nb_amount = amount_date.substr(amount_date.find(' ') + 1);
                     float nb_am = strtod(nb_amount.c_str(), NULL);
                     std::string nb_rate = rate_date.substr(rate_date.find(' '));
