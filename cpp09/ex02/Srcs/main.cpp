@@ -1,22 +1,20 @@
 #include "../Includes/PmergeMe.hpp"
 
 template<typename T>
-void print_lst(std::list<T> lst)
+    void print_lstt(std::vector<T> lst)
 {
-    typename std::list<T>::iterator it = lst.begin();
+    typename std::vector<T>::iterator it = lst.begin();
 
-    for(; it != lst.end(); it++)
+    for (; it != lst.end(); it++)
         std::cout << *it << " ";
 }
-
-
 
 int main(int ac, char **av)
 {
     if (ac == 2)
     {
         {
-            std::list<int> stack;
+            std::vector<int> stack;
             std::istringstream ss(av[1]);
 
             int num;
@@ -24,9 +22,9 @@ int main(int ac, char **av)
             {
                 stack.push_back(num);
             }
-            PmergeMe PmergeMe(stack);
-            stack = PmergeMe.ford_johnson(stack);
-            print_lst(stack);
+            PmergeMe merge(stack);
+            stack = merge.ford_johnson(merge);
+            // print_lstt(stack);
             std::cout << std::endl;
         }
     }
