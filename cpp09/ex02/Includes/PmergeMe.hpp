@@ -29,7 +29,7 @@ public:
     // functions
     template <typename T>
     void print_lst(std::vector<T> lst);
-    void swap_first_recursion_level(PmergeMe &stack);
     void swap(int *nb1, int *nb2);
     void swap_range(int start, int end, int start_swap, int end_swap);
+    void add_pend(int pairs, std::vector<int>& pend, int odd_size, std::vector<int> main );
 };
