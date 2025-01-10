@@ -23,7 +23,7 @@ int main(int ac, char **av)
                 stack.push_back(num);
             }
             PmergeMe merge(stack);
-            stack = merge.ford_johnson(merge);
+            merge.ford_johnson(merge);
             // print_lstt(stack);
             std::cout << std::endl;
         }
