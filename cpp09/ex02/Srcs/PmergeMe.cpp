@@ -82,64 +82,124 @@ void PmergeMe::ford_johnson(PmergeMe &stack)
     {
         // loop to fill pend
         int pend_start = stack._pairs * 2;
-        for (;pend_start < (nb_elements - 1) * stack._pairs;)
+        for (; pend_start < (nb_elements - 1) * stack._pairs;)
         {
             stack.pend.insert(pend.end(), stack.vec.begin() + pend_start, stack.vec.begin() + pend_start + stack._pairs);
             pend_start += stack._pairs * 2;
-            std::cout << "pend -> " ;
-            print_lst(stack.pend);
         }
     }
 
     // loop to fill main
     stack.main.insert(main.end(), stack.vec.begin(), stack.vec.begin() + stack._pairs * 2);
     int main_start = stack._pairs * 3;
-    for (;main_start < nb_elements * stack._pairs;)
+    for (; main_start <= (nb_elements - 1) * stack._pairs;)
     {
-            stack.pend.insert(pend.end(), stack.vec.begin() + pend_start, stack.vec.begin() + pend_start + stack._pairs);
+        stack.main.insert(stack.main.end(), stack.vec.begin() + main_start, stack.vec.begin() + main_start + stack._pairs);
+        main_start += stack._pairs * 2;
     }
-    std::cout << "main -> " ;
+
+    // fill odd if it exists
+    if (nb_elements % 2 == 1)
+    {
+        int odd_start = (nb_elements - 1) * stack._pairs;
+        stack.odd.insert(odd.end(), stack.vec.begin() + odd_start, stack.vec.begin() + odd_start + stack._pairs);
+    }
+
+    std::cout << std::endl
+              << "main before -> ";
     print_lst(stack.main);
+    std::cout
+        << "pend before -> ";
+    print_lst(stack.pend);
+
+    stack.binary_insertion();
+
+    std::cout << std::endl
+              << "main after -> ";
+    print_lst(stack.main);
+    std::cout
+        << "pend after -> ";
+    print_lst(stack.pend);
 
     std::cout << std::string(40, '_') << std::endl;
     stack.pend.clear();
     stack.main.clear();
-    return ;
-    for (int i = 0;;)
-    {
-        if (i + stack._pairs <= arr_size)
-            for (int j = 0; j < stack._pairs; j++)
-                main.push_back(stack.vec[i++]);
-        else if (stack.vec[i])
-        {
-            odd.push_back(stack.vec[i++]);
-        }
-    }
-
-    if (stack._pairs < arr_size / 2)
-    {
-        std::cout << "stack pairs = " << stack._pairs << std::endl;
-        std::cout << "main : ";
-        print_lst(main);
-        std::cout << "odd : ";
-        print_lst(odd);
-        add_pend(stack._pairs);
-        std::cout << "pend : ";
-        print_lst(pend);
-        std::cout << std::endl;
-        std::cout << std::endl;
-    }
+    stack.odd.clear();
 }
 
-void PmergeMe::add_pend(int pairs)
-{
-    int jump = pairs / 2;
-    int start = pairs;
-    tmp = main;
+// middle = (main.size() - pend.size()) \ 2
 
-    while (start < (int)main.size() - jump)
+// 3 differents cases : Pend is empty, pend has one elements
+// pend has 2 ore more elements and we use Jacobstal number
+
+int PmergeMe::get_elem_index(int elem_id)
+{
+    return ((elem_id - 1) * _pairs);
+}
+
+// return the index where we have to insert nb in the vector
+void PmergeMe::binary_search(int start, int end, int pend_index, int j, std::vector<int>& vec, std::vector<int>& tmp_vec)
+{
+
+    if (j < start || j > end)
     {
-        pend.insert(pend.end(), main.begin() + start, main.begin() + start + jump);
-        start += jump * 2;
+        return;
+    }
+    std::cout << "vec[pend_index] > main[j] " << vec[pend_index] << main[j] << std::endl;
+    if (vec[pend_index] > main[j] && j + 1 >= end)
+    {
+        main.insert(main.begin() + j, tmp_vec.begin() + pend_index - _pairs + 1, tmp_vec.begin() + pend_index + 1);
+        vec.erase(vec.begin() + pend_index - _pairs + 1, vec.begin() + pend_index + 1);
+    }
+    else if (pend[pend_index] <= main[j] && j - _pairs <= 0)
+    {
+        main.insert(main.begin(), tmp_vec.begin() + pend_index - _pairs + 1, tmp_vec.begin() + pend_index + 1);
+        vec.erase(vec.begin() + pend_index - _pairs + 1, vec.begin() + pend_index + 1);
+    }
+    else if (pend[pend_index] > main[j])
+    {
+        int main_index = end - start;
+        main_index += main_index / 2;
+        if (main_index % 2 != 0)
+        {
+            main_index += 1;
+        }
+        binary_search(start, end, pend_index, main_index * _pairs, vec, tmp_vec);
+    }
+    else if (pend[pend_index] <= main[j])
+    {
+        int main_index = start + (end / 2);
+        if (main_index % 2 != 0)
+        {
+            main_index -= 1;
+        }
+        binary_search(start, end, pend_index, main_index * _pairs, vec, tmp_vec);
+    }
+    // if()
+}
+
+void PmergeMe::binary_insertion()
+{
+    if (!pend.size())
+        return;
+    int pend_index = 0;
+    if (_pairs > (int)pend.size())
+        pend_index = _pairs * 2;
+    else
+        pend_index = _pairs;
+    // int counter = 0;
+    tmp = pend;
+    int j = main.size() - pend.size();
+
+        binary_search(0, j, pend_index - 1, j - 1, pend, tmp);
+        binary_search(0, odd.size(), _pairs - 1, _pairs - 1, odd, odd);
+    while (pend_index < (int)pend.size())
+    {
+
+        if (!odd.empty())
+        {
+            
+        }
+        pend_index += _pairs;
     }
 }

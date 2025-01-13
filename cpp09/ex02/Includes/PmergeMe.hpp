@@ -35,5 +35,7 @@ public:
     void print_lst(std::vector<T> lst);
     void swap(int *nb1, int *nb2);
     void swap_range(int start, int end, int start_swap, int end_swap);
-    void add_pend(int pairs);
+    void binary_insertion();
+    int get_elem_index(int elem_id);
+    void binary_search(int start, int end, int index, int res, std::vector<int>& vec , std::vector<int>& tmp);
 };
