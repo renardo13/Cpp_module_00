@@ -104,7 +104,7 @@ std::list<std::string> calcul_exchange_rate(std::list<std::string> amount, std::
             for (; rate_it != rate.end(); ++rate_it)
             {
                 std::string rate_date = *rate_it;
-                if (rate_date.substr(0, 9) == amount_date.substr(0, 9))
+                if (rate_date.substr(0, 10) == amount_date.substr(0, 10))
                 {
                     std::string nb_amount = amount_date.substr(amount_date.find(' ') + 1);
                     float nb_am = std::strtod(nb_amount.c_str(), NULL);
@@ -116,19 +116,28 @@ std::list<std::string> calcul_exchange_rate(std::list<std::string> amount, std::
                     match_flag = 1;
                     break;
                 }
-                else if (amount_date.substr(0, 9) > rate_date.substr(0, 9))
+                else if (rate_date.substr(0, 10) > amount_date.substr(0, 10)) // Si la date dépasse
                 {
-                    rate_date = *(--rate_it);
-                    std::cout << "coucou" << std::endl;
+                    // Réinitialiser l'itérateur à la date précédente
+                    std::string rate_date = *(--rate_it);
                     std::string nb_amount = amount_date.substr(amount_date.find(' ') + 1);
                     float nb_am = std::strtod(nb_amount.c_str(), NULL);
                     std::string nb_rate = rate_date.substr(rate_date.find(' '));
                     float nb = std::strtod(nb_rate.c_str(), NULL);
                     float res = nb_am * nb;
-                    final_set.push_back(amount_date.substr(0, amount_date.find(' ')) + " =>" + nb_amount + " = " + toString(res));
-                    rate_it = rate.begin();
+                    final_set.push_back(amount_date.substr(0, amount_date.find(' ')) + " => " + nb_amount + " = " + toString(res));
+                    match_flag = true;
                     break;
                 }
+            }
+            if (!match_flag)
+            {
+                std::string nb_amount = amount_date.substr(amount_date.find(' ') + 1);
+                float nb_am = std::strtod(nb_amount.c_str(), NULL);
+                std::string nb_rate = rate.back().substr(rate.back().find(' '));
+                float nb = std::strtod(nb_rate.c_str(), NULL);
+                float res = nb_am * nb;
+                final_set.push_back(amount_date.substr(0, amount_date.find(' ')) + " =>" + nb_amount + " = " + toString(res));
             }
         }
     }
@@ -143,8 +152,8 @@ int main(int ac, char **av)
         std::list<std::string> rate;
         std::list<std::string> final_set;
 
-        amount = split_input("|", "input.txt");
-        rate = split_input(",", av[1]);
+        amount = split_input("|", av[1]);
+        rate = split_input(",", "data.csv");
         final_set = calcul_exchange_rate(amount, rate);
 
         std::list<std::string>::iterator it = final_set.begin();

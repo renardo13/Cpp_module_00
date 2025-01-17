@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <deque>
+#include <stack>
 #include <string>
 #include <cctype>
 # include <exception>
