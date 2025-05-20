@@ -66,8 +66,8 @@ int main(int ac, char **av)
 			PmergeMe vector(stack);
 			PmergeMe deque(stack_deque);
 
-			std::cout << std::endl
-					  << "Before -> ";
+			std::cout
+				<< "Before -> ";
 			vector.print_lst(stack);
 
 			clock_t start = clock();
