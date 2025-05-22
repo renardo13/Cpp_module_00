@@ -29,43 +29,4 @@ class Btc
         std::string date;
 };
 
-bool isAllChar(const std::string &str)
-{
-    if (!str.empty())
-    {
-        for (size_t i = 0; i < str.size(); ++i)
-        {
-            if (isdigit(str[i]))
-                return false;
-        }
-    }
-    return true;
-}
-
-bool isAllDigit(const std::string &str)
-{
-    if (!str.empty())
-    {
-        for (size_t i = 0; i < str.size(); ++i)
-        {
-            if (isalpha(str[i]))
-                return false;
-        }
-    }
-    return true;
-}
-
-std::ostream &operator<<(std::ostream &os, std::list<std::string> &btc)
-{
-    std::list<std::string>::iterator it_date = btc.begin();
-
-    while (it_date != btc.end())
-    {
-        os << *it_date;
-        ++it_date;
-        os << std::endl;
-    }
-    return os;
-}
-
 #endif

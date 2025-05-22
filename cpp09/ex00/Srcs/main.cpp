@@ -1,6 +1,4 @@
 #include "BitcoinExchange.hpp"
-
-#include "BitcoinExchange.hpp"
 #include <iostream>
 #include <fstream>
 #include <list>
@@ -9,37 +7,92 @@
 #include <cstdlib>
 #include <limits>
 
+bool isAllChar(const std::string &str)
+{
+    if (!str.empty())
+    {
+        for (size_t i = 0; i < str.size(); ++i)
+        {
+            if (isdigit(str[i]))
+                return false;
+        }
+    }
+    return true;
+}
+
+bool isAllDigit(const std::string &str)
+{
+    if (!str.empty())
+    {
+        for (size_t i = 0; i < str.size(); ++i)
+        {
+            if (isalpha(str[i]))
+                return false;
+        }
+    }
+    return true;
+}
+
+std::ostream &operator<<(std::ostream &os, std::list<std::string> &btc)
+{
+    std::list<std::string>::iterator it_date = btc.begin();
+
+    while (it_date != btc.end())
+    {
+        os << *it_date;
+        ++it_date;
+        os << std::endl;
+    }
+    return os;
+}
+
 std::string is_date_valid(const std::string &res)
 {
     if (res.empty())
         return "Error: date is missing";
+
     size_t sep_pos = res.find(" ");
     if (sep_pos == std::string::npos || !isAllDigit(res))
         return "Error: bad input";
+
     std::string date = res.substr(0, sep_pos);
     size_t first_dash = date.find("-");
     size_t second_dash = date.find("-", first_dash + 1);
     if (first_dash == std::string::npos || second_dash == std::string::npos)
         return "Error: invalid date format (expected YYYY-MM-DD)";
+
     std::string year_str = date.substr(0, first_dash);
     std::string month_str = date.substr(first_dash + 1, second_dash - first_dash - 1);
     std::string day_str = date.substr(second_dash + 1);
-    double year = std::strtod(year_str.c_str(), NULL);
-    double month = std::strtod(month_str.c_str(), NULL);
-    double day = std::strtod(day_str.c_str(), NULL);
-    if (year < 0 || year > 2025)
+
+    int year = std::atoi(year_str.c_str());
+    int month = std::atoi(month_str.c_str());
+    int day = std::atoi(day_str.c_str());
+
+    if (year < 2001 || year > 2025)
         return "Error: year is invalid";
+
     if (month < 1 || month > 12)
         return "Error: month is invalid";
-    if (day < 1 || day > 31 || (month == 2 && day > 29) ||
-        ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30))
+
+    bool is_leap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+
+    if (day < 1 || day > 31)
         return "Error: day is invalid";
+    if (month == 2) {
+        if ((is_leap && day > 29) || (!is_leap && day > 28))
+            return "Error: day is invalid";
+    }
+    else if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
+        return "Error: day is invalid";
+
     std::string value = res.substr(sep_pos + 1);
     double nb = std::strtod(value.c_str(), NULL);
     if (nb < 0)
         return "Error: value is not a positive number";
     if (nb > std::numeric_limits<int>::max())
         return "Error: value is too large";
+
     return res;
 }
 

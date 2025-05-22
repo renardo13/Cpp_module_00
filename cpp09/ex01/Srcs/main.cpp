@@ -71,6 +71,11 @@ int main(int ac, char **av)
                 }
                 else if (isOperator(av[1][i]))
                 {
+                    if (av[1][i] == '/' && stack.top() == 0)
+                    {
+                        std::cout << "Division by zero is not allowed\n";
+                        return (-1);
+                    }
                     if (stack.size() < 2)
                     {
                         std::cout << "Error: Not enough operands for operation." << std::endl;
