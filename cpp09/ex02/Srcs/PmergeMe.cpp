@@ -2,6 +2,12 @@
 #include <algorithm>
 #include <stdio.h>
 
+// Constructeur pour std::vector<int>
+PmergeMe::PmergeMe(std::vector<int> array) : vec(array) {}
+
+// Constructeur pour std::deque<int>
+PmergeMe::PmergeMe(std::deque<int> array) : deque_vec(array) {}
+
 void PmergeMe::swap(int *nb1, int *nb2)
 {
 	int tmp;
@@ -17,11 +23,22 @@ PmergeMe::PmergeMe(PmergeMe const &cpy)
 {
 }
 
-PmergeMe const &PmergeMe::operator=(PmergeMe const &other)
+PmergeMe &PmergeMe::operator=(const PmergeMe &other)
 {
-	if (this != &other)
+	if (this != &other) {
 		this->vec = other.vec;
-	return (*this);
+		this->main = other.main;
+		this->pend = other.pend;
+		this->odd = other.odd;
+		this->tmp = other.tmp;
+
+		this->deque_vec = other.deque_vec;
+		this->deque_main = other.deque_main;
+		this->deque_pend = other.deque_pend;
+		this->deque_odd = other.deque_odd;
+		this->deque_tmp = other.deque_tmp;
+	}
+	return *this;
 }
 
 void PmergeMe::swap_range(int start, int end, int swap_start, int swap_end)
@@ -43,6 +60,21 @@ void PmergeMe::swap_range(int start, int end, int swap_start, int swap_end)
 	vec.clear();
 	vec = temp;
 }
+
+void PmergeMe::binary_insertion(std::vector<int> &tab, int tab_idx,
+								std::vector<int> &nb, int idx_nb, int pair)
+{
+	while (tab_idx >= 0 && tab[tab_idx] > nb[idx_nb])
+		tab_idx -= pair / 2;
+
+	if (tab_idx < 0)
+		tab.insert(tab.begin(), nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
+	else
+		tab.insert(tab.begin() + tab_idx + 1, nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
+
+	nb.erase(nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
+}
+
 
 std::vector<int> PmergeMe::ford_johnson_vector(PmergeMe &stack, int pair)
 {

@@ -16,6 +16,17 @@ int	PmergeMe::get_max(std::deque<int> tabv, int idx, int end)
 	return (max);
 }
 
+bool PmergeMe::is_sorted(std::vector<int> tab, int begin, int step)
+{
+	for (int i = begin; i + step < static_cast<int>(tab.size()); i += step)
+	{
+		if (tab[i] > tab[i + step])
+			return false;
+	}
+	return true;
+}
+
+
 bool PmergeMe::is_sorted(std::deque<int> tabd, int begin, int step)
 {
 	int max_left = get_max(tabd, begin, begin + step / 2);
@@ -23,25 +34,6 @@ bool PmergeMe::is_sorted(std::deque<int> tabd, int begin, int step)
 	if (max_left < max_right)
 		return (true);
 	return (false);
-}
-
-
-template <typename T>
-void PmergeMe::print_lst(std::vector<T> lst)
-{
-	typename std::vector<T>::iterator it = lst.begin();
-	for (; it != lst.end(); it++)
-		std::cout << *it << " ";
-	std::cout << std::endl;
-}
-
-template <typename T>
-void PmergeMe::print_lst(std::deque<T> lst)
-{
-	typename std::deque<T>::iterator it = lst.begin();
-	for (; it != lst.end(); it++)
-		std::cout << *it << " ";
-	std::cout << std::endl;
 }
 
 int is_digit(char *str)
@@ -94,9 +86,9 @@ int main(int ac, char **av)
 				<< "Before -> ";
 			vector.print_lst(stack);
 
-			// clock_t start = clock();
-			// stack = vector.ford_johnson(vector);
-			// clock_t end = clock();
+			clock_t start = clock();
+			stack = vector.ford_johnson_vector(vector, 2);
+			clock_t end = clock();
 
 			clock_t deque_start = clock();
 			stack_deque = deque.ford_johnson_deque(deque, 2);
@@ -106,10 +98,10 @@ int main(int ac, char **av)
 				<< "After ->  ";
 			vector.print_lst(stack_deque);
 
-			// double duration_us = (double)(end - start) / CLOCKS_PER_SEC * 1000000;
+			double duration_us = (double)(end - start) / CLOCKS_PER_SEC * 1000000;
 			double deque_duration_us = (double)(deque_end - deque_start) / CLOCKS_PER_SEC * 1000000;
-			// std::cout << "Time to process a range of " << stack.size() << " elements with std::vector "
-			// 		  << duration_us << " us" << std::endl;
+			std::cout << "Time to process a range of " << stack.size() << " elements with std::vector "
+					  << duration_us << " us" << std::endl;
 
 			std::cout << "Time to process a range of " << stack.size() << " elements with std::deque  "
 					  << deque_duration_us << " us" << std::endl;

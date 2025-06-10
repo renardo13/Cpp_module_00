@@ -45,8 +45,6 @@ public:
     void swap_range(int start, int end, int start_swap, int end_swap);
     bool is_sorted(std::vector<int> tab, int begin, int step);
     int get_max(std::vector<int> tab, int idx, int end);
-    template <typename T>
-    void print_lst(const std::vector<T> &lst);
 
     // Ford-Johnson with std::deque
     std::deque<int> ford_johnson_deque(PmergeMe &stack, int pair);
@@ -54,6 +52,20 @@ public:
     void swap_range_deque(int start, int end, int start_swap, int end_swap);
     bool is_sorted(std::deque<int> tab, int begin, int step);
     int get_max(std::deque<int> tab, int idx, int end);
+
     template <typename T>
-    void print_lst(const std::deque<T> &lst);
+    void print_lst(const std::vector<T> &lst)
+    {
+        for (size_t i = 0; i < lst.size(); ++i)
+            std::cout << lst[i] << " ";
+        std::cout << std::endl;
+    }
+
+    template <typename T>
+    void print_lst(const std::deque<T> &lst)
+    {
+        for (size_t i = 0; i < lst.size(); ++i)
+            std::cout << lst[i] << " ";
+        std::cout << std::endl;
+    }
 };
