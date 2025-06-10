@@ -1,71 +1,53 @@
-#pragma once
+#ifndef PMERGEME_HPP
+# define PMERGEME_HPP
 
-#include <iostream>
-#include <vector>
-#include <deque>
-#include <sstream>
-#include <string>
-#include <cstdlib>
-#include <cmath>
+# include <iostream>
+# include <vector>
+# include <list>
+# include <exception>
+# include <ctime>
+# include <sstream>
+# include <stdbool.h>
+# include <cmath>
+# include <deque>
+
+# define RED     "\033[31m"
+# define GREEN   "\033[0;32m"
+# define RESET   "\033[0m"
 
 class PmergeMe
 {
-private:
-    // Vectors
-    std::vector<int> vec;
-    std::vector<int> main;
-    std::vector<int> pend;
-    std::vector<int> odd;
-    std::vector<int> tmp;
+	private:
+		std::vector<int>	vec;
+		std::deque<int>		deque;
 
-    // Deques
-    std::deque<int> deque_vec;
-    std::deque<int> deque_main;
-    std::deque<int> deque_pend;
-    std::deque<int> deque_odd;
-    std::deque<int> deque_tmp;
+	public:
+		// Canonical Orthodox Form
+		PmergeMe(void);
+		PmergeMe(std::string* args, int size);
+		~PmergeMe(void);
+		PmergeMe(PmergeMe const &src);
+		PmergeMe &operator=(PmergeMe const &src);
 
-public:
-    // Constructors & Destructor
-    PmergeMe() {}
-    ~PmergeMe() {}
-    PmergeMe(const PmergeMe &cpy);
-    PmergeMe &operator=(const PmergeMe &other);
+		// Parsing & sort algorithm methods
+		void		parse_push(std::string input);
+		void		ford_johnson_vec(std::vector<int> &vec, int pair);
+		void		ford_johnson_deque(std::deque<int> &deque, int pair);
+		static bool	is_integer(std::string str);
+		long		jacobsthal(long n);
 
-    PmergeMe(std::vector<int> array);
-    PmergeMe(std::deque<int> array);
+		// Vector sorting
+		void	swap(std::vector<int> &tabv, int begin, int step);
+		void	binary_insertion(std::vector<int> &tab, int tab_idx, std::vector<int> &nb, int idx_nb, int pair);
+		bool 	is_sorted(const std::vector<int> &tabv, int begin, int step) const;
+		int		get_max(const std::vector<int> &tabv, int idx, int end) const;
+		
+		// Deque sorting
+		void	swap(std::deque<int> &tabl, int begin, int step);
+		void	binary_insertion(std::deque<int> &tab, int tab_idx, std::deque<int> &nb, int idx_nb, int pair);
+		bool	is_sorted(const std::deque<int> &tabd, int begin, int step) const;
+		int		get_max(const std::deque<int> &tabd, int idx, int end) const;
 
-    // Utility
-    long jacobsthal(long n);
-
-    // Ford-Johnson with std::vector
-    std::vector<int> ford_johnson_vector(PmergeMe &stack, int pair);
-    void binary_insertion(std::vector<int> &tab, int tab_idx, std::vector<int> &nb, int idx_nb, int pair);
-    void swap(int *nb1, int *nb2);
-    void swap_range(int start, int end, int start_swap, int end_swap);
-    bool is_sorted(std::vector<int> tab, int begin, int step);
-    int get_max(std::vector<int> tab, int idx, int end);
-
-    // Ford-Johnson with std::deque
-    std::deque<int> ford_johnson_deque(PmergeMe &stack, int pair);
-    void binary_insertion(std::deque<int> &tab, int tab_idx, std::deque<int> &nb, int idx_nb, int pair);
-    void swap_range_deque(int start, int end, int start_swap, int end_swap);
-    bool is_sorted(std::deque<int> tab, int begin, int step);
-    int get_max(std::deque<int> tab, int idx, int end);
-
-    template <typename T>
-    void print_lst(const std::vector<T> &lst)
-    {
-        for (size_t i = 0; i < lst.size(); ++i)
-            std::cout << lst[i] << " ";
-        std::cout << std::endl;
-    }
-
-    template <typename T>
-    void print_lst(const std::deque<T> &lst)
-    {
-        for (size_t i = 0; i < lst.size(); ++i)
-            std::cout << lst[i] << " ";
-        std::cout << std::endl;
-    }
 };
+
+#endif
