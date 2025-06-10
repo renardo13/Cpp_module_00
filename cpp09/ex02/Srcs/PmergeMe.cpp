@@ -1,6 +1,6 @@
 #include "PmergeMe.hpp"
 #include <algorithm>
-
+#include <stdio.h>
 
 void PmergeMe::swap(int *nb1, int *nb2)
 {
@@ -44,148 +44,101 @@ void PmergeMe::swap_range(int start, int end, int swap_start, int swap_end)
 	vec = temp;
 }
 
-void PmergeMe::binary_insertion(std::vector<int> &tab, int tab_idx,
-								std::vector<int> &nb, int idx_nb, int pair)
+std::vector<int> PmergeMe::ford_johnson_vector(PmergeMe &stack, int pair)
 {
-	while (tab_idx >= 0 && tab[tab_idx] > nb[idx_nb])
-		tab_idx -= pair / 2;
-	if (tab_idx < 0)
-		tab.insert(tab.begin(), nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
-	else
-		tab.insert(tab.begin() + tab_idx + 1, nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
-	nb.erase(nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
-}
+    int arr_size = stack.vec.size();
 
-// Jump is the number of elements that we skip while itering
-// _pairs is the number of elements that we use to form pairs
-std::vector<int> PmergeMe::ford_johnson(PmergeMe &stack)
-{
-    int arr_size;
-    int jump;
-    int nb_elements;
-    int pend_start;
-    int main_start;
-    int odd_start;
-    int j;
-    int main_pair;
-    int inserted_pend;
-    int first_pend;
-    int jacob_nb;
-    int a;
-    int b;
-
-    arr_size = stack.vec.size();
-    if (_pairs >= arr_size / 2)
+    if (arr_size / pair < 1)
         return stack.vec;
 
-    jump = _pairs;
-    while (jump + _pairs - 1 < arr_size)
+    // Trier les paires
+    for (int begin = 0; begin < arr_size; begin += pair)
     {
-        if (stack.vec[jump - 1] > stack.vec[jump + _pairs - 1])
-            stack.swap_range(jump - _pairs, jump - 1, jump, jump + _pairs - 1);
-        jump += _pairs * 2;
+        if (begin + pair > arr_size)
+            break;
+        if (!is_sorted(stack.vec, begin, pair))
+            stack.swap_range(begin, begin + pair / 2 - 1, begin + pair / 2, begin + pair - 1);
     }
 
-    _pairs *= 2;
-    stack.ford_johnson(stack);  // Recursive call
-    _pairs /= 2;
+    // Snapshot local du vecteur trié récursivement
+    PmergeMe temp_stack;
+    temp_stack.vec = stack.vec;
+    std::vector<int> sorted = ford_johnson_vector(temp_stack, pair * 2);
 
-    if (_pairs > arr_size / 4)
-        return stack.vec;
+    // Préparer les conteneurs locaux
+    std::vector<int> main;
+    std::vector<int> pend;
+    std::vector<int> odd;
+    std::vector<int> tmp;
 
-    // Separation phase main, odd and pend
-    nb_elements = arr_size / _pairs;
-    if (nb_elements >= 4)
+    int main_nb = 0;
+
+    // Initialiser main avec la première paire
+    main.insert(main.end(), sorted.begin(), sorted.begin() + pair);
+
+    for (int i = pair; i < arr_size; i += pair)
     {
-        // Fill pend
-        pend_start = _pairs * 2;
-        for (; pend_start < (nb_elements - 1) * _pairs;)
+        if (i + pair > arr_size)
         {
-            stack.pend.insert(stack.pend.end(), stack.vec.begin() + pend_start,
-                              stack.vec.begin() + pend_start + _pairs);
-            pend_start += _pairs * 2;
+            // Cas impair
+            if (i + pair / 2 - 1 < arr_size)
+                odd.insert(odd.end(), sorted.begin() + pair * (main_nb + 1),
+                                     sorted.begin() + pair * (main_nb + 1) + (pair / 2));
+
+            // Reste
+            if (arr_size % (pair / 2) != 0)
+                tmp.insert(tmp.end(), sorted.end() - (arr_size % (pair / 2)), sorted.end());
+            break;
+        }
+
+        main.insert(main.end(), sorted.begin() + pair * (main_nb + 1) + (pair / 2),
+                              sorted.begin() + pair * (main_nb + 2));
+
+        pend.insert(pend.end(), sorted.begin() + pair * (main_nb + 1),
+                              sorted.begin() + pair * (main_nb + 1) + (pair / 2));
+
+        main_nb++;
+    }
+
+    // Insertion binaire avec Jacobsthal
+    int j = 0;
+    int inserted_pend = 0;
+    while (!pend.empty())
+    {
+        int jacob_nb = jacobsthal(j++);
+        int first_pend = inserted_pend + 2;
+        int b = (((jacob_nb + 1) - (first_pend)) * (pair / 2)) - 1;
+
+        if (static_cast<unsigned long>(b) > (pend.size() - 1))
+        {
+            b = pend.size() - 1;
+            jacob_nb = first_pend + (pend.size() / (pair / 2));
+        }
+
+        int main_pair = (b + 1) / (pair / 2);
+        for (int i = 0; i < main_pair; i++)
+        {
+            int a = (inserted_pend + jacob_nb) * (pair / 2) - 1;
+            binary_insertion(main, a, pend, b, pair);
+            b -= (pair / 2);
+            jacob_nb--;
+            inserted_pend++;
         }
     }
 
-    // Fill main
-    stack.main.insert(stack.main.end(), stack.vec.begin(), stack.vec.begin() + _pairs * 2);
-    main_start = _pairs * 3;
-    for (; main_start <= (nb_elements - 1) * _pairs;)
-    {
-        stack.main.insert(stack.main.end(), stack.vec.begin() + main_start,
-                          stack.vec.begin() + main_start + _pairs);
-        main_start += _pairs * 2;
-    }
+    // Insertion des impairs
+    if (!odd.empty())
+        binary_insertion(main, main.size() - 1, odd, odd.size() - 1, pair);
 
-    // Fill odd
-    if (nb_elements % 2 == 1)
-    {
-        odd_start = (nb_elements - 1) * _pairs;
-        stack.odd.insert(stack.odd.end(), stack.vec.begin() + odd_start,
-                         stack.vec.begin() + odd_start + _pairs);
-    }
-
-	// Fusion of the elements
-    j = 0;
-    main_pair = 0;
-    inserted_pend = 0;
-    first_pend = 0;
-    jacob_nb = 0;
-    a = 0;
-    b = 0;
-
-    if (!stack.pend.empty())
-    {
-        while (!stack.pend.empty())
-        {
-            jacob_nb = jacobsthal(j++);
-            first_pend = inserted_pend + 2;
-            b = (((jacob_nb + 1) - (first_pend)) * _pairs) - 1;
-            if (static_cast<unsigned long>(b) > (stack.pend.size() - 1))
-            {
-                b = stack.pend.size() - 1;
-                jacob_nb = first_pend + (stack.pend.size() / _pairs);
-            }
-            main_pair = (b + 1) / _pairs;
-            for (int i = 0; i < main_pair; i++)
-            {
-                a = (inserted_pend + jacob_nb) * _pairs - 1;
-                binary_insertion(stack.main, a, stack.pend, b, 2 * _pairs);
-                b -= _pairs;
-                jacob_nb--;
-                inserted_pend++;
-            }
-        }
-    }
-    if (!stack.odd.empty())
-    {
-        binary_insertion(stack.main, stack.main.size() - 1, stack.odd, stack.odd.size() - 1, 2 * _pairs);
-    }
-
+    // Fusion finale
     stack.vec.clear();
-    stack.vec.insert(stack.vec.end(), stack.main.begin(), stack.main.end());
-    if (!stack.tmp.empty())
-    {
-        stack.vec.insert(stack.vec.end(), stack.tmp.begin(), stack.tmp.end());
-    }
-
-    // finalisation to sort the last pair
-    if (!stack.pend.empty())
-    {
-        binary_insertion(stack.main, stack.main.size() - 1, stack.pend, stack.pend.size() - 1, 2 * _pairs);
-    }
-    if (!stack.odd.empty())
-    {
-        binary_insertion(stack.main, stack.main.size() - 1, stack.odd, stack.odd.size() - 1, 2 * _pairs);
-    }
-
-    // Clean the vector
-    stack.pend.clear();
-    stack.main.clear();
-    stack.odd.clear();
+    stack.vec.insert(stack.vec.end(), main.begin(), main.end());
+    if (!tmp.empty())
+        stack.vec.insert(stack.vec.end(), tmp.begin(), tmp.end());
 
     return stack.vec;
 }
+
 
 /* ---------------------------------------------------------------------The same algorithm with std::deque ------------------------------------------------------------------ */
 
@@ -193,18 +146,13 @@ std::vector<int> PmergeMe::ford_johnson(PmergeMe &stack)
 void PmergeMe::binary_insertion(std::deque<int> &tab, int tab_idx,
 								std::deque<int> &nb, int idx_nb, int pair)
 {
+
 	while (tab_idx >= 0 && tab[tab_idx] > nb[idx_nb])
-	{
 		tab_idx -= pair / 2;
-	}
 	if (tab_idx < 0)
-	{
 		tab.insert(tab.begin(), nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
-	}
 	else
-	{
 		tab.insert(tab.begin() + tab_idx + 1, nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
-	}
 	nb.erase(nb.begin() + idx_nb - (pair / 2) + 1, nb.begin() + idx_nb + 1);
 }
 
@@ -229,139 +177,101 @@ void PmergeMe::swap_range_deque(int start, int end, int swap_start, int swap_end
 	deque_vec = temp;
 }
 
-std::deque<int> PmergeMe::ford_johnson_deque(PmergeMe &stack)
+std::deque<int> PmergeMe::ford_johnson_deque(PmergeMe &stack, int pair)
 {
-    int arr_size;
-    int jump;
-    int nb_elements;
-    int pend_start;
-    int main_start;
-    int odd_start;
-    int j;
-    int main_pair;
-    int inserted_pend;
-    int first_pend;
-    int jacob_nb;
-    int a;
-    int b;
+    int arr_size = stack.deque_vec.size();
 
-    arr_size = stack.deque_vec.size();
-    if (_pairs >= arr_size / 2)
+    if (arr_size / pair < 1)
         return stack.deque_vec;
 
-    jump = _pairs;
-    while (jump + _pairs - 1 < arr_size)
+    // Sort pairs
+    for (int begin = 0; begin < arr_size; begin += pair)
     {
-        if (stack.deque_vec[jump - 1] > stack.deque_vec[jump + _pairs - 1])
-            stack.swap_range_deque(jump - _pairs, jump - 1, jump, jump + _pairs - 1);
-        jump += _pairs * 2;
+        if (begin + pair > arr_size)
+            break;
+        if (!is_sorted(stack.deque_vec, begin, pair))
+            stack.swap_range_deque(begin, begin + pair / 2 - 1, begin + pair / 2, begin + pair - 1);
     }
 
-    _pairs *= 2;
-    stack.ford_johnson_deque(stack);  // return in the recursion the swap value in the pair
+    // 👇 Stocker un snapshot local du tableau trié récursivement
+    PmergeMe temp_stack;
+    temp_stack.deque_vec = stack.deque_vec;
+    std::deque<int> sorted = ford_johnson_deque(temp_stack, pair * 2);
 
-    // Initialize main and odd stacks
-    _pairs /= 2;
-    if (_pairs > arr_size / 4)
-        return stack.deque_vec;
+    // Préparer les conteneurs locaux
+    std::deque<int> main;
+    std::deque<int> pend;
+    std::deque<int> odd;
+    std::deque<int> tmp;
 
-    // Remplir pend et main
-    nb_elements = arr_size / _pairs;
-    if (nb_elements >= 4)
+    int main_nb = 0;
+
+    // Initialiser main avec la première paire
+    main.insert(main.end(), sorted.begin(), sorted.begin() + pair);
+
+    for (int i = pair; i < arr_size; i += pair)
     {
-        // loop to fill pend
-        pend_start = _pairs * 2;
-        for (; pend_start < (nb_elements - 1) * _pairs;)
+        if (i + pair > arr_size)
         {
-            stack.deque_pend.insert(stack.deque_pend.end(), stack.deque_vec.begin() + pend_start,
-                                   stack.deque_vec.begin() + pend_start + _pairs);
-            pend_start += _pairs * 2;
+            // Odd
+            if (i + pair / 2 - 1 < arr_size)
+                odd.insert(odd.end(), sorted.begin() + pair * (main_nb + 1),
+                                     sorted.begin() + pair * (main_nb + 1) + (pair / 2));
+
+            // Temp
+            if (arr_size % (pair / 2) != 0)
+                tmp.insert(tmp.end(), sorted.end() - (arr_size % (pair / 2)), sorted.end());
+            break;
+        }
+
+        main.insert(main.end(), sorted.begin() + pair * (main_nb + 1) + (pair / 2),
+                              sorted.begin() + pair * (main_nb + 2));
+
+        pend.insert(pend.end(), sorted.begin() + pair * (main_nb + 1),
+                              sorted.begin() + pair * (main_nb + 1) + (pair / 2));
+
+        main_nb++;
+    }
+
+    // Binary insertion using Jacobsthal
+    int j = 0;
+    int inserted_pend = 0;
+    while (!pend.empty())
+    {
+        int jacob_nb = jacobsthal(j++);
+        int first_pend = inserted_pend + 2;
+        int b = (((jacob_nb + 1) - (first_pend)) * (pair / 2)) - 1;
+
+        if (static_cast<unsigned long>(b) > (pend.size() - 1))
+        {
+            b = pend.size() - 1;
+            jacob_nb = first_pend + (pend.size() / (pair / 2));
+        }
+
+        int main_pair = (b + 1) / (pair / 2);
+        for (int i = 0; i < main_pair; i++)
+        {
+            int a = (inserted_pend + jacob_nb) * (pair / 2) - 1;
+            binary_insertion(main, a, pend, b, pair);
+            b -= (pair / 2);
+            jacob_nb--;
+            inserted_pend++;
         }
     }
 
-    // loop to fill main
-    stack.deque_main.insert(stack.deque_main.end(), stack.deque_vec.begin(), stack.deque_vec.begin() + _pairs * 2);
-    main_start = _pairs * 3;
-    for (; main_start <= (nb_elements - 1) * _pairs;)
-    {
-        stack.deque_main.insert(stack.deque_main.end(), stack.deque_vec.begin() + main_start,
-                               stack.deque_vec.begin() + main_start + _pairs);
-        main_start += _pairs * 2;
-    }
+    // Insertion des impairs
+    if (!odd.empty())
+        binary_insertion(main, main.size() - 1, odd, odd.size() - 1, pair);
 
-    // fill odd if it exists
-    if (nb_elements % 2 == 1)
-    {
-        odd_start = (nb_elements - 1) * _pairs;
-        stack.deque_odd.insert(stack.deque_odd.end(), stack.deque_vec.begin() + odd_start,
-                              stack.deque_vec.begin() + odd_start + _pairs);
-    }
-
-    j = 0;
-    main_pair = 0;
-    inserted_pend = 0;
-    first_pend = 0;
-    jacob_nb = 0;
-    a = 0;
-    b = 0;
-
-    if (!stack.deque_pend.empty())
-    {
-        while (!stack.deque_pend.empty())
-        {
-            jacob_nb = jacobsthal(j++);
-            first_pend = inserted_pend + 2;
-            b = (((jacob_nb + 1) - (first_pend)) * _pairs) - 1;
-            if (static_cast<unsigned long>(b) > (stack.deque_pend.size()) - 1)
-            {
-                // put the b to the last index of the pend
-                b = stack.deque_pend.size() - 1;
-                jacob_nb = first_pend + (stack.deque_pend.size() / _pairs);
-            }
-            main_pair = (b + 1) / _pairs;
-            for (int i = 0; i < main_pair; i++)
-            {
-                a = (inserted_pend + jacob_nb) * _pairs - 1;
-                binary_insertion(stack.deque_main, a, stack.deque_pend, b, 2 * _pairs);
-                b -= _pairs;
-                jacob_nb--;
-                inserted_pend++;
-            }
-        }
-    }
-
-    // Si pend est vide et que odd existe
-    if (!stack.deque_odd.empty())
-    {
-        binary_insertion(stack.deque_main, stack.deque_main.size() - 1, stack.deque_odd, stack.deque_odd.size() - 1, 2 * _pairs);
-    }
-
-    // Réorganisation finale des éléments dans deque_vec
+    // Fusion finale
     stack.deque_vec.clear();
-    stack.deque_vec.insert(stack.deque_vec.end(), stack.deque_main.begin(), stack.deque_main.end());
-    if (!stack.deque_tmp.empty())
-    {
-        stack.deque_vec.insert(stack.deque_vec.end(), stack.deque_tmp.begin(), stack.deque_tmp.end());
-    }
-
-    // Finalisation du tri : dernière itération pour la dernière paire non triée
-    // Si la taille de `pend` ou `odd` est petite, on peut avoir des éléments non triés
-    if (!stack.deque_pend.empty())
-    {
-        binary_insertion(stack.deque_main, stack.deque_main.size() - 1, stack.deque_pend, stack.deque_pend.size() - 1, 2 * _pairs);
-    }
-    if (!stack.deque_odd.empty())
-    {
-        binary_insertion(stack.deque_main, stack.deque_main.size() - 1, stack.deque_odd, stack.deque_odd.size() - 1, 2 * _pairs);
-    }
-
-    // Nettoyage des structures intermédiaires
-    stack.deque_pend.clear();
-    stack.deque_main.clear();
-    stack.deque_odd.clear();
+    stack.deque_vec.insert(stack.deque_vec.end(), main.begin(), main.end());
+    if (!tmp.empty())
+        stack.deque_vec.insert(stack.deque_vec.end(), tmp.begin(), tmp.end());
 
     return stack.deque_vec;
 }
+
 
 long PmergeMe::jacobsthal(long n)
 {
